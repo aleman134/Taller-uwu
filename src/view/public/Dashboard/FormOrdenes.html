@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Órdenes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="ordenes-container">
+    <!-- Formulario de Órdenes -->
+    <div class="register-container">
+      <h2>Registro de Órdenes</h2>
+      <form id="ordenForm">
+        <div class="form-row">
+          <select id="cliente_id" required>
+            <option value="">Seleccione Cliente *</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+<<<<<<< HEAD
+          <select id="vehiculo_id">
+=======
+          <select id="vehiculo_id" required>
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+            <option value="">Seleccione Vehículo *</option>
+          </select>
+          <select id="mecanico_id" required>
+            <option value="">Seleccione Mecánico *</option>
+          </select>
+        </div>
+        
+        <div class="form-row">
+<<<<<<< HEAD
+          <select id="cita_id">
+=======
+          <select id="cita_id" required>
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+            <option value="">Seleccione una cita</option>
+          </select>
+          <input type="date" id="fecha_estimada_salida" placeholder="Fecha estimada de salida">
+        </div>
+        
+        <select id="estadoOrden" required>
+          <option value="">Seleccione Estado *</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="en_proceso">En Proceso</option>
+<<<<<<< HEAD
+=======
+          <option value="en_espera">En Espera</option>
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+          <option value="finalizada">Finalizada</option>
+          <option value="entregada">Entregada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+        
+        <textarea id="descripcion_inicial" placeholder="Descripción Inicial" rows="3"></textarea>
+        <textarea id="diagnostico" placeholder="Diagnóstico" rows="3"></textarea>
+        <textarea id="observaciones" placeholder="Observaciones" rows="3"></textarea>
+        
+        <div class="form-row">
+          <input type="number" id="costo_mano_obra" placeholder="Costo Mano de Obra" step="0.01" min="0">
+          <input type="number" id="kilometraje_ingreso" placeholder="Kilometraje de Ingreso (Opcional)" min="0">
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn-submit">Registrar</button>
+          <button type="button" id="cancelarBtnOrden" class="btn-cancel" onclick="cancelarEdicionOrdenes()" style="display: none;">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Sección de Búsqueda y Filtros -->
+    <div class="search-section">
+      <h3>Buscar y Filtrar Órdenes</h3>
+      
+      <div class="search-controls">
+        <div class="search-group">
+          <input type="number" id="buscarIdOrden" placeholder="Buscar por ID">
+          <button class="btn-search" onclick="buscarOrdenPorId()">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+        
+        <div class="filter-group">
+          <select id="filtroEstado" onchange="filtrarPorEstado()">
+            <option value="">Filtrar por Estado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="en_proceso">En Proceso</option>
+<<<<<<< HEAD
+=======
+            <option value="en_espera">En Espera</option>
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+            <option value="finalizada">Finalizada</option>
+            <option value="entregada">Entregada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+          
+          <button class="btn-show-all" onclick="mostrarTodasLasOrdenes()">
+            <i class="fas fa-list"></i> Mostrar Todas
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filtros adicionales para Admin -->
+      <div class="admin-filters" id="adminFilters" style="display: none;">
+        <div class="filter-group">
+          <select id="filtroMecanico">
+            <option value="">Filtrar por Mecánico</option>
+          </select>
+          <button class="btn-filter" onclick="filtrarPorMecanico()">
+            <i class="fas fa-filter"></i> Filtrar
+          </button>
+        </div>
+        
+        <div class="filter-group">
+          <select id="filtroCliente">
+            <option value="">Filtrar por Cliente</option>
+          </select>  
+          <button class="btn-filter" onclick="filtrarPorCliente()">
+            <i class="fas fa-filter"></i> Filtrar
+          </button>
+        </div>
+        
+        <div class="filter-group">
+          <button class="btn-warning" onclick="cargarOrdenesVencidas()">
+            <i class="fas fa-exclamation-triangle"></i> Órdenes Vencidas
+          </button>
+          <button class="btn-info" onclick="cargarOrdenesProximasAVencer()">
+            <i class="fas fa-clock"></i> Próximas a Vencer
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Tabla de Órdenes -->
+    <div class="orders-section">
+      <h3>Lista de Órdenes Registradas</h3>
+      <div class="table-responsive">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Número</th>
+              <th>Cliente</th>
+              <th>Vehículo</th>
+              <th>Mecánico</th>
+              <th>Estado</th>
+              <th>Fecha Estimada</th>
+              <th>Costo Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="ordenesBody">
+            <tr>
+              <td colspan="9" class="no-orders">Cargando órdenes...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/ordenes.js"></script>
+</body>
+</html>

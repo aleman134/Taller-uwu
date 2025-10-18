@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes del Taller</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="register-container">
+    <!-- Título -->
+    <h2>Reportes del Taller</h2>
+
+    <!-- Filtros / Búsqueda -->
+    <div class="search-section">
+      <h3>Filtrar Reportes</h3>
+      <div class="search-controls">
+        <div class="search-group">
+          <label for="fechaInicio">Desde:</label>
+          <input type="date" id="fechaInicio">
+        </div>
+
+        <div class="search-group">
+          <label for="fechaFin">Hasta:</label>
+          <input type="date" id="fechaFin">
+        </div>
+
+        <button class="btn-search" id="btnFiltrarReportes">
+          <i class="fas fa-chart-bar"></i> Generar Reporte
+        </button>
+      </div>
+    </div>
+
+    <!-- Reportes Generales -->
+    <div class="users-section">
+      <h3>Resumen del Periodo</h3>
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody id="resumenPeriodoBody">
+            <tr>
+              <td colspan="2" class="no-users">Cargando...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="users-section">
+      <h3>Estadísticas Generales</h3>
+
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Datos</th>
+            </tr>
+          </thead>
+          <tbody id="estadisticasBody">
+            <tr><td colspan="2" class="no-users">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/reportesEhistorial.js"></script>
+  <script src="../js/dashboardReportes.js"></script>
+</body>
+</html>

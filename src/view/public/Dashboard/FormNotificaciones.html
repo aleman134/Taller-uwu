@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrador</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<!-- Formulario de Registro de Notificaciones -->
+<div class="register-container">
+  <h2>Registrar Notificación</h2>
+  <form id="notificacionForm">
+    <select id="usuarioNotificacion" required>
+        <option value="">Seleccionar Usuario * </option>
+    </select>    
+    
+    <select id="tipoNotificacion" required>
+      <option value="">Seleccionar Tipo *</option>
+      <option value="cita">Cita</option>
+      <option value="orden_trabajo">Orden de trabajo</option>
+      <option value="mantenimiento">Mantenimiento</option>
+      <option value="sistema">Sistema</option>
+    </select>
+    
+    <input type="text" id="tituloNotificacion" placeholder="Título de la Notificación *" required  maxlength="100">
+    <textarea id="mensajeNotificacion" placeholder="Mensaje de la Notificación *" required rows="4" maxlength="500"></textarea>
+    <input type="datetime-local" id="fechaNotificacion" placeholder="Fecha Programada (Opcional)">
+    <button type="submit" class="btn-submit">Crear Notificación</button>
+  </form>
+</div>
+
+<!-- Sección de Búsqueda -->
+<div class="search-section">
+  <h3>Buscar Notificaciones</h3>
+  <div class="search-controls">
+    <div class="filter-group">
+      <select id="buscarIdUsuarioNotificacion" placeholder="Buscar por Usuario"  min="1">
+        <option value="">Seleccionar Cliente</option>
+      </select>
+      <button class="btn-search" onclick="buscarNotificacionesPorUsuario()">
+        <i class="fas fa-search"></i> Buscar
+      </button>
+    </div>
+    
+    <button class="btn-show-all" onclick="cargarTodasNotificaciones()">
+      <i class="fas fa-list"></i> Mostrar Todas
+    </button>
+
+    <div class="filter-group">
+      <select id="buscarTipoNotificacion">
+        <option value="">Filtrar por Tipo</option>
+        <option value="cita">Cita</option>
+        <option value="orden_trabajo">Orden de Trabajo</option>
+        <option value="mantenimiento">Mantenimiento</option>
+        <option value="sistema">Sistema</option>
+      </select>
+      <button class="btn-filter" onclick="buscarNotificacionesPorTipo()">
+        <i class="fas fa-filter"></i> Buscar
+      </button>
+    </div>
+
+    <button class="btn-filter" onclick="cargarNotificacionesPendientes()">
+      <i class="fas fa-hourglass-half"></i> Pendientes
+    </button>
+
+    <button class="btn-filter" onclick="cargarNotificacionesLeidas()">
+      <i class="fas fa-hourglass-half"></i> Notificaciones Leídas
+    </button>      
+    
+    <button class="btn-warning" onclick="limpiarNotificacionesAntiguas(30)">
+      <i class="fas fa-trash-alt"></i> Limpiar Antiguas (30 días)
+    </button>
+
+    <button id="btnMarcarTodasLeidas" class="btn-warning" style="display:none" onclick="marcarTodasNotificacionesLeidasMecanico()">
+      <i class="fas fa-check-double"></i> Marcar Todas Como Leídas
+    </button>  
+
+  </div>
+</div>
+
+<!-- Tabla de Notificaciones -->
+<div class="orders-section">
+  <h3>Lista de Notificaciones</h3>
+  <div class="table-responsive">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Usuario ID</th>
+          <th>Tipo</th>
+          <th>Título</th>
+          <th>Mensaje</th>
+          <th>Fecha Programada</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="notificacionesBody">
+        <tr>
+          <td colspan="7" class="no-orders">Cargando notificaciones...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

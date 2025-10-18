@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Clientes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="register-container">
+    <!-- Formulario de Registro/Edición -->
+    <h2>Registro de Clientes</h2>
+    <form id="clienteForm">
+      <input type="text" id="nombreCliente" placeholder="Nombre *" required>
+      <input type="text" id="apellidoCliente" placeholder="Apellido *" required>
+      <input type="text" id="dpiCliente" placeholder="DPI *" required>
+      <input type="tel" id="telefonoCliente" placeholder="Teléfono *" required>
+      <input type="email" id="correoCliente" placeholder="Correo Electrónico *" required>
+      <input type="text" id="direccionCliente" placeholder="Dirección *" required>
+      
+      <button type="submit" class="btn-submit">Registrar</button>
+      <button type="button" id="cancelarBtnClientes" class="btn-cancel" style="display: none;" onclick="cancelarEdicionCliente()">
+        Cancelar
+      </button>
+    </form>
+
+    <!-- Sección de Búsqueda -->
+    <div class="search-section">
+      <h3>Buscar Clientes</h3>
+      <div class="search-controls">
+        <div class="search-group">
+          <input type="number" id="buscarId" placeholder="Buscar por ID">
+          <button class="btn-search" onclick="buscarClientePorId()">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+        <button class="btn-show-all" onclick="mostrarTodosLosClientes()">
+          <i class="fas fa-list"></i> Mostrar Todos
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla de Clientes -->
+    <div class="users-section">
+      <h3>Lista de Clientes Registrados</h3>
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>DPI</th>
+              <th>Teléfono</th>
+              <th>Correo</th>
+              <th>Dirección</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="clientesBody">
+            <tr>
+              <td colspan="8" class="no-users">Cargando clientes...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/clientes.js"></script>
+</body>
+</html>

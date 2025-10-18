@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Servicios</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="register-container">
+    <h2>Registro de Servicios</h2>
+    
+    <!-- Formulario de registro/edición -->
+    <form id="servicioForm">
+      <input type="text" id="nombreServicio" placeholder="Nombre del servicio *" required>
+      <textarea id="descripcionServicio" placeholder="Descripción del servicio" rows="3"></textarea>
+      <input type="number" id="precioServicio" placeholder="Precio base *" step="0.01" min="0" required>
+      <input type="number" id="tiempoServicio" placeholder="Tiempo estimado (minutos)" min="1">
+      
+      <select id="categoriaServicio">
+        <option value="">Seleccionar categoría</option>
+        <option value="Mantenimiento">Mantenimiento</option>
+        <option value="Reparación">Reparación</option>
+        <option value="Diagnóstico">Diagnóstico</option>
+        <option value="Neumáticos">Neumáticos</option>
+        <option value="Eléctrico">Eléctrico</option>
+        <option value="Carrocería">Carrocería</option>
+        <option value="Pintura">Pintura</option>
+        <option value="Suspensión">Suspensión</option>
+        <option value="Frenos">Frenos</option>
+        <option value="Motor">Motor</option>
+      </select>
+      
+      <select id="estadoServicio">
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+      
+      <button type="submit" class="btn-submit">Registrar</button>
+      <button type="button" id="cancelarBtnServicio" class="btn-cancel" onclick="cancelarEdicionServicios()" style="display: none;">
+        Cancelar
+      </button>
+    </form>
+
+    <!-- Sección de búsqueda y filtros -->
+    <div class="search-section">
+      <h3>Buscar y Filtrar Servicios</h3>
+      
+      <div class="search-controls">
+        <!-- Buscar por ID -->
+        <div class="search-group">
+          <input type="number" id="buscarIdServicio" placeholder="Buscar por ID">
+          <button class="btn-search" onclick="buscarServicioPorId()">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+
+        <!-- Filtrar por categoría -->
+        <div class="filter-group">
+          <select id="filtroCategoria">
+            <option value="">Todas las categorías</option>
+          </select>
+          <button class="btn-filter" onclick="buscarServiciosPorCategoria()">
+            <i class="fas fa-filter"></i> Filtrar
+          </button>
+        </div>
+
+        <!-- Botones adicionales -->
+        <button class="btn-show-all" onclick="mostrarTodosLosServicios()">
+          <i class="fas fa-list"></i> Mostrar Todos
+        </button>
+        
+        <button class="btn-info" onclick="cargarServiciosActivos()">
+          <i class="fas fa-check-circle"></i> Solo Activos
+        </button>
+      </div>
+
+      <!-- Filtros adicionales -->
+      <div class="admin-filters">
+        <h4 style="width: 100%; margin-bottom: 10px; color: black">
+            Buscar por Rango de Precio
+        </h4>
+        <div class="filter-group">
+          <input type="number" id="precioMin" placeholder="Precio mínimo" step="0.01" min="0">
+          <input type="number" id="precioMax" placeholder="Precio máximo" step="0.01" min="0">
+          <button class="btn-filter" onclick="buscarServiciosPorRangoPrecio()">
+            Buscar
+          </button>
+        </div>
+<<<<<<< HEAD
+      </div>
+    </div>
+
+=======
+
+        <button class="btn-warning" onclick="cargarEstadisticasServicios()">
+          <i class="fas fa-chart-bar"></i> Ver Estadísticas
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor de estadísticas -->
+    <div id="estadisticasServicios" style="margin: 20px 0; display: none;"></div>
+
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+    <!-- Tabla de servicios -->
+    <div class="users-section">
+      <h3>Lista de Servicios</h3>
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Tiempo</th>
+              <th>Categoría</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="serviciosBody">
+            <tr>
+              <td colspan="9" class="no-users">Cargando servicios...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/servicios.js"></script>
+</body>
+</html>

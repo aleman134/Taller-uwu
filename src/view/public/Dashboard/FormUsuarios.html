@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Usuarios</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="register-container">
+    <h2>Registro de Usuarios</h2>
+    <form id="usuarioForm">
+      <input type="text" id="nombreUsuario" placeholder="Nombre *" required>
+      <input type="text" id="apellidoUsuario" placeholder="Apellido *" required>
+      <input type="email" id="correoUsuario" placeholder="Correo *" required>
+      <input type="text" id="telefonoUsuario" placeholder="Teléfono *" required>
+      <input type="password" id="contraseniaUsuario" placeholder="Contraseña *" required>
+      <select id="rol" required>
+        <option value="">Seleccione un rol *</option>
+        <option value="administrador">Administrador</option>
+        <option value="mecanico">Mecánico</option>
+      </select>
+      <select id="estadoUsuario" required>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+      
+      <button type="submit" class="btn-submit">Registrar</button>
+      <button type="button" id="cancelarBtnUsuarios" class="btn-cancel" style="display: none;" onclick="cancelarEdicionUsuarios()">
+        Cancelar
+      </button>
+    </form>
+
+    <div class="search-section">
+      <h3>Buscar Usuarios</h3>
+      <div class="search-controls">
+        <div class="search-group">
+          <input type="number" id="buscarIdUsuario" placeholder="Buscar por ID">
+          <button class="btn-search" onclick="buscarUsuarioPorId()">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+        <button class="btn-show-all" onclick="cargarUsuarios()">
+          <i class="fas fa-list"></i> Mostrar Todos
+        </button>
+      </div>
+    </div>
+
+    <div class="users-section">
+      <h3>Lista de Usuarios Registrados</h3>
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Correo</th>
+              <th>Teléfono</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="usuariosBody">
+            <tr>
+              <td colspan="8" class="no-users">Cargando usuarios...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/usuarios.js"></script>
+</body>
+</html>

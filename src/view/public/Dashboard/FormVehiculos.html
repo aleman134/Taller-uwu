@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Vehículos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="register-container">
+    <!-- Formulario de Registro de Vehículos -->
+    <h2>Registro de Vehículos</h2>
+    <form id="vehiculoForm">
+      <select id="clienteIdVehiculo" required>
+        <option value="">Seleccione Cliente</option>
+      </select>  
+      <input type="text" id="marcaVehiculo" placeholder="Marca *" required>
+      <input type="text" id="modeloVehiculo" placeholder="Modelo *" required>
+      <input type="number" id="anioVehiculo" placeholder="Año *" required min="1900" max="2099">
+      <input type="text" id="placaVehiculo" placeholder="Placa *" required>
+      <input type="text" id="colorVehiculo" placeholder="Color">
+      <input type="text" id="numeroMotorVehiculo" placeholder="Número de Motor">
+      <input type="text" id="numeroChasisVehiculo" placeholder="Número de Chasis">
+      <input type="number" id="kilometrajeVehiculo" placeholder="Kilometraje" min="0">
+      
+      <button type="submit" class="btn-submit">Registrar</button>
+      <button type="button" id="cancelarBtnVehiculo" class="btn-cancel" onclick="cancelarEdicionVehiculo()" style="display: none;">
+        Cancelar
+      </button>
+    </form>
+
+    <!-- Sección de Búsqueda -->
+    <div class="search-section">
+      <h3>Buscar Vehículos</h3>
+      <div class="search-controls">
+        <div class="search-group">
+          <input type="number" id="buscarIdVehiculo" placeholder="Buscar por ID">
+          <button class="btn-search" onclick="buscarVehiculoPorId()">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+        
+        <div class="filter-group">
+          <select id="buscarClienteIdVehiculo">
+            <option value="">Seleccionar Cliente</option>
+          </select>  
+          <button class="btn-search" onclick="buscarVehiculosPorCliente()">
+            <i class="fas fa-user"></i> Buscar
+          </button>
+        </div>
+        
+        <div class="search-group">
+          <input type="text" id="buscarPlacaVehiculo" placeholder="Buscar por Placa">
+          <button class="btn-search" onclick="buscarVehiculoPorPlaca()">
+            <i class="fas fa-id-card"></i> Buscar
+          </button>
+        </div>
+        
+        <button class="btn-show-all" onclick="mostrarTodosLosVehiculos()">
+          <i class="fas fa-list"></i> Mostrar Todos
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla de Vehículos -->
+    <div class="users-section">
+      <h3>Lista de Vehículos</h3>
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Año</th>
+              <th>Placa</th>
+              <th>Color</th>
+              <th>Nº Motor</th>
+              <th>Nº Chasis</th>
+              <th>Kilometraje</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="vehiculosBody">
+            <tr>
+              <td colspan="11" class="no-users">Cargando vehículos...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/vehiculos.js"></script>
+</body>
+</html>

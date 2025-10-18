@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Servicios</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  <div class="register-container">
+    <!-- Título -->
+    <h2>Historial de Servicios</h2>
+
+    <!-- Búsqueda -->
+    <div class="search-section">
+      <h3>Buscar Historial por Orden</h3>
+      <div class="search-controls">
+        <div class="search-group">
+          <input type="number" id="ordenInput" placeholder="Ingrese ID de Orden">
+          <button class="btn-search" id="buscarOrdenBtn">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+        </div>
+
+        <button class="btn-show-all" id="mostrarTodosBtn">
+          <i class="fas fa-list"></i> Mostrar Todos
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla de Resultados -->
+    <div class="users-section">
+      <h3>Detalles de la Orden</h3>
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID Servicio</th>
+              <th>Orden</th>
+              <th>Descripción</th>
+              <th>Fecha</th>
+              <th>Costo</th>
+            </tr>
+          </thead>
+          <tbody id="historialBody">
+            <tr>
+              <td colspan="5" class="no-users">Esperando búsqueda...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/reportesEhistorial.js"></script>
+  <script src="../js/dashboardHistorial.js"></script>
+</body>
+</html>

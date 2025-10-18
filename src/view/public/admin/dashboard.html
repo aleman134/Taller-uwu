@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrador</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>Taller uwu</h3>
+      <button class="toggle-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a class="nav-link active" onclick="showSection('dashboard')">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Mi Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('clients')">
+          <i class="fas fa-user"></i>
+          <span>Clientes</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('vehicles')">
+          <i class="fas fa-car"></i>
+          <span>Vehiculos</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('services')">
+          <i class="fas fa-tools"></i>
+          <span>Servicios</span>
+        </a>
+      </li>      
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('my-orders')">
+          <i class="fas fa-wrench"></i>
+          <span>Mis Órdenes</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('appointments')">
+          <i class="fas fa-calendar-check"></i>
+          <span>Mis Citas</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('notifications')">
+          <i class="fas fa-bell"></i>
+          <span>Notificaciones</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('history')">
+          <i class="fas fa-history"></i>
+          <span>Historial</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('reports')">
+          <i class="fas fa-file-alt"></i>
+          <span>Reportes</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" onclick="showSection('users')">
+          <i class="fas fa-users"></i>
+          <span>Usuarios</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- footer logout -->
+    <div class="sidebar-footer">
+      <button onclick="logout()" class="logout-btn-sidebar">
+        <i class="fas fa-sign-out-alt logout-icon"></i>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div> 
+  </nav> 
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <header class="header">
+      <h1 id="pageTitle">Mi Dashboard</h1>
+      <div class="user-info">
+        <div class="user-avatar"></div>
+        <div>
+          <strong id="userName"></strong>
+          <br>
+          <small id="userRole"></small>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- Secciones dinámicas -->
+      <section id="dashboard" class="section">
+        <p>Bienvenido a tu panel de control.</p>
+      </section>
+
+      <section id="clients" class="section" style="display: none;">
+        <p>Gestión de clientes registrados.</p>
+      </section>
+
+      <section id="vehicles" class="section" style="display: none;">
+        <p>Gestión de vehículos registrados.</p>
+      </section>      
+
+      <section id="services" class="section" style="display: none;">
+        <p>Administración de servicios del taller.</p>
+      </section>      
+
+      <section id="my-orders" class="section" style="display: none;">
+        <p>Aquí verás todas tus órdenes de trabajo.</p>
+      </section>
+
+      <section id="appointments" class="section" style="display: none;">
+        <p>Gestiona tus citas programadas.</p>
+      </section>
+
+      <section id="notifications" class="section" style="display: none;">
+        <p>Gestiona tus notificaciones.</p>
+      </section>      
+
+      <section id="history" class="section" style="display: none;">
+        <p>Revisa el historial de trabajos realizados.</p>
+      </section>
+
+      <section id="reports" class="section" style="display: none;">
+        <p>Genera y consulta reportes del taller.</p>
+      </section>
+
+      <section id="users" class="section" style="display: none;">
+        <div id="usuariosContainer"></div>
+      </section>
+    </main>
+  </div>
+<script src="../js/config.js"></script> 
+<script src="../js/autenticacion.js"></script>
+<script src="../js/logout.js"></script>
+
+<!-- Scripts de funcionalidad base -->
+<script src="../js/usuarios.js"></script>
+<script src="../js/clientes.js"></script>
+<script src="../js/vehiculos.js"></script>
+<script src="../js/servicios.js"></script>
+<script src="../js/ordenes.js"></script>
+<script src="../js/trabajosOrdenes.js"></script>
+<script src="../js/citas.js"></script>
+<script src="../js/notificaciones.js"></script>
+<<<<<<< HEAD
+<script src="../js/reportesEhistorial.js"></script>
+=======
+<script src="../js/historial.js"></script>
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
+<!-- Scripts de dashboard -->
+ <script src="../js/dashboardUsuarios.js"></script>
+<script src="../js/dashboardClientes.js"></script>
+<script src="../js/dashboardVehiculos.js"></script>
+<script src="../js/dashboardServicios.js"></script>
+<script src="../js/dashboardOrdenes.js"></script>
+<script src="../js/dashboardCitas.js"></script>
+<script src="../js/dashboardNotificaciones.js"></script>
+<script src="../js/dashboardHistorial.js"></script>
+<<<<<<< HEAD
+<script src="../js/dashboardReportes.js"></script>
+=======
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+<script src="../js/dashboardAdmin.js"></script>
+</body>
+</html>

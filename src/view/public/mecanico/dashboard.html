@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Mecánico</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Taller uwu</h3>
+            <button class="toggle-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Mi Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showSection('my-orders')">
+                    <i class="fas fa-wrench"></i>
+                    <span>Mis Órdenes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showSection('appointments')">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Mis Citas</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showSection('history')">
+                    <i class="fas fa-history"></i>
+                    <span>Historial</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="showSection('reports')">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reportes</span>
+                </a>
+            </li>
+        </ul>
+
+    <!-- footer logout -->
+    <div class="sidebar-footer">
+      <button onclick="logout()" class="logout-btn-sidebar">
+        <i class="fas fa-sign-out-alt logout-icon"></i>
+        <span>Cerrar Sesión</span>
+      </button>
+    </div> 
+  </nav> 
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <header class="header">
+            <h1 id="pageTitle">Mi Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar"></div>
+                <div>
+                    <strong id="userName"></strong>
+                    <br>
+                    <small id="userRole"></small>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <!-- Aquí van todas las secciones -->
+        </main>
+    </div>
+
+    <script src="../js/autenticacion.js"></script>
+    <script src="../js/logout.js"></script>
+    <script src="../js/usuarios.js"></script>
+    <script src="../js/dashboardMecanico.js"></script>
+</body>
+</html>

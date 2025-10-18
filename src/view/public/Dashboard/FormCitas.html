@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Citas - Taller</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body class="register-page">
+  
+  <div class="ordenes-container">
+    <!-- Formulario de Registro de Citas -->
+    <div class="register-container">
+      <h2>Registro de Citas</h2>
+      <form id="citaForm">
+        <select id="clienteIdCita" required>
+          <option value="">Seleccionar Cliente *</option>
+        </select>
+        <select id="vehiculoIdCita" required disabled>
+          <option value="">Primero seleccione un cliente</option>
+        </select>
+        <select id="mecanicoIdCita">
+          <option value="">Sin Mecánico Asignado (Opcional)</option>
+        </select>
+        <input type="datetime-local" id="fechaCita" placeholder="Fecha y Hora de la Cita" required>
+        <input type="number" id="duracionMinutosCita" placeholder="Duración en Minutos" min="15" step="15" value="60">
+        <input type="text" id="motivoCita" placeholder="Motivo de la Cita *" required maxlength="255">
+        
+        <select id="estadoCita" required>
+          <option value="">Seleccionar Estado</option>
+          <option value="programada" selected>Programada</option>
+          <option value="confirmada">Confirmada</option>
+          <option value="en_proceso">En Proceso</option>
+          <option value="completada">Completada</option>
+          <option value="cancelada">Cancelada</option>
+        </select>
+        
+        <textarea 
+          id="observacionesCita" 
+          placeholder="Observaciones (Opcional)"
+          rows="3"
+        ></textarea>
+        
+        <button type="submit" class="btn-submit">Registrar</button>
+        <button type="button" id="cancelarBtnCita" class="btn-cancel" style="display: none;" onclick="cancelarEdicionCitas()">
+          Cancelar
+        </button>
+      </form>
+    </div>
+
+    <!-- Sección de Búsqueda y Filtros -->
+    <div class="search-section">
+      <h3>Buscar y Filtrar Citas</h3>
+      
+      <div class="search-controls">
+        <!-- Buscar por ID -->
+        <div class="search-group">
+          <input type="number" id="buscarIdCita" placeholder="Buscar por ID" min="1">
+          <button class="btn-search" onclick="buscarCitaPorId()">
+            <i class="fas fa-search"></i> Buscar ID
+          </button>
+        </div>
+
+        <!-- Buscar por Cliente -->
+        <div class="filter-group">
+          <select id="buscarClienteIdCita">
+            <option value="">Seleccionar Cliente</option>
+          </select>  
+          <button class="btn-filter" onclick="buscarCitasPorCliente()">
+            <i class="fas fa-user"></i> Por Cliente
+          </button>
+        </div>
+
+        <!-- Buscar por Mecánico-->
+        <div class="filter-group">
+          <select id="buscarMecanicoIdCita">
+            <option value="">Seleccionar Mecánico</option>
+          </select>  
+          <button class="btn-filter" onclick="buscarCitasPorMecanico()">
+            <i class="fas fa-user-tie"></i> Por Mecánico
+          </button>
+        </div>
+      </div>
+
+      <div class="search-controls">
+        <!-- Buscar por Fecha -->
+        <div class="filter-group">
+          <input type="date" id="buscarFechaCita">
+          <button class="btn-filter" onclick="buscarCitasPorFecha()">
+            <i class="fas fa-calendar"></i> Por Fecha
+          </button>
+        </div>
+
+        <!-- Buscar por Estado -->
+        <div class="filter-group">
+          <select id="buscarEstadoCita">
+            <option value="">Estado de Cita</option>
+            <option value="programada">Programada</option>
+            <option value="confirmada">Confirmada</option>
+            <option value="en_proceso">En Proceso</option>
+            <option value="completada">Completada</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+          <button class="btn-filter" onclick="buscarCitasPorEstado()">
+            <i class="fas fa-filter"></i> Por Estado
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros Administrativos -->
+      <div class="admin-filters">
+        <button class="btn-show-all" onclick="mostrarTodasLasCitas()">
+          <i class="fas fa-list"></i> Mostrar Todas
+        </button>
+<<<<<<< HEAD
+      </div>
+    </div>
+
+=======
+        <button class="btn-warning" onclick="obtenerEstadisticasCita()">
+          <i class="fas fa-chart-bar"></i> Ver Estadísticas
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor de estadísticas (se crea dinámicamente) -->
+    <div id="estadisticasCitas" style="display: none;"></div>
+
+>>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+    <!-- Tabla de Citas -->
+    <div class="orders-section">
+      <h3>Lista de Citas</h3>
+      <div class="table-responsive">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Vehículo</th>
+              <th>Mecánico</th>
+              <th>Fecha y Hora</th>
+              <th>Motivo</th>
+              <th>Estado</th>
+              <th>Observaciones</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="citasBodyCitas">
+            <tr>
+              <td colspan="10" class="no-orders">Cargando citas...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/config.js"></script>
+  <script src="../js/citas.js"></script>
+  
+  <!-- Inicialización para página standalone -->
+  <script>
+    // Ejecutar cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Página de citas cargada, inicializando...');
+      
+      // Verificar que las funciones existen
+      if (typeof inicializarEventosCitas === 'function') {
+        inicializarEventosCitas();
+        console.log('Eventos de citas inicializados');
+      } else {
+        console.error('inicializarEventosCitas no está definida');
+      }
+      
+      // Cargar citas iniciales
+      if (typeof cargarCitasCita === 'function') {
+        cargarCitasCita();
+        console.log('Cargando citas iniciales...');
+      } else {
+        console.error('cargarCitasCita no está definida');
+      }
+    });
+  </script>
+</body>
+</html>
