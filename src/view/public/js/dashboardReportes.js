@@ -222,7 +222,7 @@ async function cargarReportes() {
   }
 }
 
-// ========== VERSIÓN MEJORADA DE mostrarReporteEnTabla ==========
+
 function mostrarReporteEnTabla(idTabla, idHead, data) {
   const tabla = document.getElementById(idTabla);
   const thead = document.getElementById(idHead);
@@ -305,83 +305,7 @@ function mostrarReporteEnTabla(idTabla, idHead, data) {
   }
 }
 
-// Mostrar datos genéricos en tabla
-function mostrarReporteEnTabla(idTabla, idHead, data) {
-  const tabla = document.getElementById(idTabla);
-  const thead = document.getElementById(idHead);
-  
-  if (!tabla) {
-    console.error(`No se encontró la tabla con id: ${idTabla}`);
-    return;
-  }
 
-  if (!data || !Array.isArray(data) || data.length === 0) {
-    tabla.innerHTML = "<tr><td colspan='10' class='no-users'>Sin datos disponibles</td></tr>";
-    if (thead) thead.innerHTML = '';
-    return;
-  }
-
-  try {
-    const keys = Object.keys(data[0]);
-    
-    // Crear encabezados
-    if (thead) {
-      thead.innerHTML = `<tr>${keys.map(k => `<th>${formatearNombreColumna(k)}</th>`).join('')}</tr>`;
-    }
-
-    // Llenar datos
-    tabla.innerHTML = data.map(d => `
-      <tr>
-        ${keys.map(k => {
-          let valor = d[k];
-          
-          // Formatear fechas
-          if (valor && typeof valor === 'string' && valor.includes('T') && valor.includes('Z')) {
-            try {
-              valor = new Date(valor).toLocaleDateString('es-GT');
-            } catch (e) {
-              // Mantener valor original si falla
-            }
-          }
-          
-          const esCampoMonetario = (
-            k.toLowerCase().includes('costo') || 
-            k.toLowerCase().includes('precio') || 
-            k.toLowerCase().includes('ingreso') ||
-            k.toLowerCase().includes('monto') ||
-            k.toLowerCase().includes('valor')
-          ) && !k.toLowerCase().includes('cantidad') && !k.toLowerCase().includes('total');
-          
-          // Formatear valores numéricos de dinero
-          if (typeof valor === 'number' && esCampoMonetario) {
-            valor = 'Q' + valor.toFixed(2);
-          }
-          
-          // Formatear strings numéricos de dinero
-          if (typeof valor === 'string' && !isNaN(valor) && esCampoMonetario) {
-            valor = 'Q' + parseFloat(valor).toFixed(2);
-          }
-          
-          // Formatear booleanos
-          if (typeof valor === 'boolean') {
-            valor = valor ? 'Sí' : 'No';
-          }
-          
-          // Manejar null/undefined
-          if (valor === null || valor === undefined) {
-            valor = 'N/A';
-          }
-          
-          return `<td>${valor}</td>`;
-        }).join('')}
-      </tr>
-    `).join('');
-  } catch (error) {
-    console.error(`Error al procesar datos para ${idTabla}:`, error, data);
-    tabla.innerHTML = "<tr><td colspan='10' class='no-users'>Error al procesar los datos</td></tr>";
-    if (thead) thead.innerHTML = '';
-  }
-}
 
 // =================== Reporte por período ===================
 async function generarResumenPeriodo() {

@@ -5,7 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:unit": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testMatch='**/tests/unit/**/*.test.js' --coverage",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --coverageDirectory=coverage",
+    "migrate:test": "node scripts/migrate-test-db.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
   },
   "author": "",
   "license": "ISC",
@@ -15,10 +22,30 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    
     "mysql2": "^3.14.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@jest/globals": "^30.2.0",
+    "@types/jest": "^29.5.5",
+    "eslint": "^8.50.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "controllers/**/*.js",
+      "routes/**/*.js",
+      "!index.js"
+    ],
+    "testTimeout": 10000,
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
   }
 }

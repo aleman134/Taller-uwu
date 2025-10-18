@@ -1,0 +1,88 @@
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpassword
+          MYSQL_DATABASE: taller_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Instalar dependencias
+      run: npm ci
+
+    - name: Esperar que MySQL esté listo
+      run: |
+        for i in {1..30}; do
+          if mysqladmin ping -h"127.0.0.1" --silent; then
+            echo "MySQL está listo"
+            break
+          fi
+          echo "Esperando MySQL..."
+          sleep 2
+        done
+
+    - name: Ejecutar migraciones de base de datos
+      env:
+        DB_HOST: 127.0.0.1
+        DB_USER: root
+        DB_PASSWORD: testpassword
+        DB_NAME: taller_test
+      run: npm run migrate:test
+
+    - name: Ejecutar pruebas unitarias
+      env:
+        NODE_ENV: test
+        DB_HOST: 127.0.0.1
+        DB_USER: root
+        DB_PASSWORD: testpassword
+        DB_NAME: taller_test
+      run: npm run test:unit
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - run: npm ci
+    - run: npm run lint
+
+  build:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - run: npm ci
+    - run: echo "Build completado exitosamente"

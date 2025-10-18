@@ -742,11 +742,8 @@ function mostrarModalReporte(reporte) {
             <p style="margin: 5px 0;"><strong>Kilometraje:</strong> ${orden.kilometraje_ingreso || 'N/A'} km</p>
           </div>
         </div>
-<<<<<<< HEAD
-        info
-=======
-        
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
+
         <div style="margin-bottom: 20px;">
           <h3 style="color: #e67e22; margin-bottom: 10px;">Descripción y Diagnóstico</h3>
           <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
