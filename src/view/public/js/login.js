@@ -4,15 +4,11 @@ window.addEventListener('DOMContentLoaded', () => {
   if (usuario) {
     const userData = JSON.parse(usuario);
     if (userData.rol === 'administrador') {
-<<<<<<< HEAD
+
       window.location.replace('./src/view/public/admin/dashboard.html');
     } else if (userData.rol === 'mecanico') {
       window.location.replace('./src/view/public/mecanico/dashboard.html');
-=======
-      window.location.replace('../public/admin/dashboard.html');
-    } else if (userData.rol === 'mecanico') {
-      window.location.replace('../public/mecanico/dashboard.html');
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     }
   }
 });
@@ -38,15 +34,11 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
       localStorage.setItem('usuario', JSON.stringify(json.user));
 
       if (json.user.rol === 'administrador') {
-<<<<<<< HEAD
+
         window.location.replace('./src/view/public/admin/dashboard.html');
       } else {
         window.location.replace('./src/view/mecanico/admin/dashboard.html');
-=======
-        window.location.replace('../public/admin/dashboard.html');
-      } else {
-        window.location.replace('../public/mecanico/dashboard.html');
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
       }
 
     } else {

@@ -19,7 +19,7 @@ const repuestoUtilizadoController = {
         }
     },
 
-<<<<<<< HEAD
+
     getById: async (req, res) => {
         try {
             const repuesto = await RespuestoUtilizado.getById(req.params.id);
@@ -33,8 +33,7 @@ const repuestoUtilizadoController = {
         }
     },
 
-=======
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     create: async (req, res) => {
         try {
             const repuesto = await RespuestoUtilizado.create(req.body);
@@ -47,16 +46,14 @@ const repuestoUtilizadoController = {
     getEstadisticas: async (req, res) => {
         try {
             const { fecha_inicio, fecha_fin } = req.query;
-<<<<<<< HEAD
+
             const estadisticas = await RespuestoUtilizado.getEstadisticas(fecha_inicio, fecha_fin);
-=======
-            const estadisticas = await RespuestoUtilizado.getEstadisticas();
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
             res.json(estadisticas);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
-<<<<<<< HEAD
+
     },
     
     delete: async (req, res) => {
@@ -72,8 +69,7 @@ const repuestoUtilizadoController = {
             console.error('Error en delete repuesto:', error);
             res.status(500).json({ error: error.message });
         }
-=======
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     }
 };
 

@@ -15,10 +15,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-<<<<<<< HEAD
-    "express-session": "^1.18.2",
-=======
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+    
     "mysql2": "^3.14.3"
   },
   "devDependencies": {

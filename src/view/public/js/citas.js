@@ -697,115 +697,7 @@ async function cambiarEstadoCita(id, nuevoEstado) {
   }
 }
 
-<<<<<<< HEAD
-=======
-// Obtener estadísticas
-async function obtenerEstadisticasCita() {  
-  try {
-    const res = await fetch(`${API_URL_CITAS}/estadisticas`);
-    
-    if (res.ok) {
-      const estadisticas = await res.json();
-      
-      if (!estadisticas || Object.keys(estadisticas).length === 0) {
-        alert("No hay estadísticas disponibles");
-        return;
-      }
-      
-      mostrarEstadisticasVisualCita(estadisticas);
-    } else {
-      const errorText = await res.text();
-      console.error('Error del servidor:', errorText);
-      alert("Error al obtener estadísticas: " + errorText);
-    }
-  } catch (err) {
-    console.error("Error al obtener estadísticas:", err);
-    alert("Error al obtener estadísticas: " + err.message);
-  }
-}
 
-// Mostrar estadísticas de forma visual
-function mostrarEstadisticasVisualCita(stats) {
-  
-  if (typeof stats !== 'object' || stats === null) {
-    console.error('Formato de estadísticas inválido:', stats);
-    alert('Error: Formato de estadísticas inválido');
-    return;
-  }
-  
-  let contenedor = document.getElementById('estadisticasCitas');
-  
-  if (!contenedor) {
-    const searchSection = document.querySelector('.search-section');
-    if (searchSection) {
-      contenedor = document.createElement('div');
-      contenedor.id = 'estadisticasCitas';
-      contenedor.style.margin = '20px 0';
-      searchSection.insertAdjacentElement('afterend', contenedor);
-    } else {
-      alert('No se pudo mostrar las estadísticas');
-      return;
-    }
-  }
-  
-  contenedor.style.display = 'block';
-  
-  const tarjetasHTML = crearTarjetasEstadisticasCitas(stats);
-  
-  contenedor.innerHTML = `
-    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3 style="color: black; margin: 0;">
-          <i class="fas fa-chart-line"></i> Estadísticas de Citas
-        </h3>
-        <button class="btn-delete" onclick="ocultarEstadisticasCitas()" style="padding: 6px 12px;">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      ${tarjetasHTML}
-    </div>
-  `;
-  
-  contenedor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-// Crear tarjetas de estadísticas
-function crearTarjetasEstadisticasCitas(stats) {
-  const tarjetas = [
-    { valor: stats.total_citas || 0, texto: 'Total de Citas', gradient: '#34495e', icono: 'fa-calendar-alt' },
-    { valor: stats.programadas || 0, texto: 'Programadas', gradient: '#34495e', icono: 'fa-clock' },
-    { valor: stats.confirmadas || 0, texto: 'Confirmadas', gradient: '#34495e', icono: 'fa-check-circle' },
-    { valor: stats.en_proceso || 0, texto: 'En Proceso', gradient: '#34495e', icono: 'fa-cog' },
-    { valor: stats.completadas || 0, texto: 'Completadas', gradient: '#34495e', icono: 'fa-check-double' },
-    { valor: stats.canceladas || 0, texto: 'Canceladas', gradient: '#34495e', icono: 'fa-times-circle' },
-    { valor: stats.citas_hoy || 0, texto: 'Citas Hoy', gradient: '#34495e', icono: 'fa-calendar-day' },
-    { valor: stats.citas_manana || 0, texto: 'Citas Mañana', gradient: '#34495e', icono: 'fa-calendar-plus' },
-    { valor: stats.duracion_promedio_minutos ? `${Math.round(stats.duracion_promedio_minutos)} min` : 'N/A', texto: 'Duración Promedio', gradient: '#34495e', icono: 'fa-hourglass-half' }
-  ];
-
-  return `
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
-      ${tarjetas.map(t => `
-        <div style="background: ${t.gradient}; padding: 20px; border-radius: 10px; color: white; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;">
-          <div style="font-size: 2rem; margin-bottom: 10px;"><i class="fas ${t.icono}"></i></div>
-          <div style="font-size: ${typeof t.valor === 'string' && t.valor.includes('min') ? '1.5rem' : '2.5rem'}; font-weight: bold; margin-bottom: 8px;">${t.valor}</div>
-          <div style="font-size: 0.9rem; opacity: 0.95; font-weight: 500;">${t.texto}</div>
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-// Ocultar estadísticas
-function ocultarEstadisticasCitas() {
-  const contenedor = document.getElementById('estadisticasCitas');
-  if (contenedor) {
-    contenedor.style.display = 'none';
-    contenedor.innerHTML = '';
-  }
-}
-
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
 // Cancelar edición
 function cancelarEdicionCitas() {
   window.citaEnEdicion = null;
@@ -1135,18 +1027,12 @@ window.buscarCitasPorMecanico = buscarCitasPorMecanico;
 window.buscarCitasPorFecha = buscarCitasPorFecha;
 window.buscarCitasPorEstado = buscarCitasPorEstado;
 window.cambiarEstadoCita = cambiarEstadoCita;
-<<<<<<< HEAD
-=======
-window.obtenerEstadisticasCita = obtenerEstadisticasCita;
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 window.mostrarTodasLasCitas = mostrarTodasLasCitas;
 window.cancelarEdicionCitas = cancelarEdicionCitas;
 window.inicializarEventosCitas = inicializarEventosCitas;
 window.cargarCitasCita = cargarCitasCita;
-<<<<<<< HEAD
-=======
-window.ocultarEstadisticasCitas = ocultarEstadisticasCitas;
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 window.sincronizarCitasTemporales = sincronizarCitasTemporales;
 window.notificarMecanicoAsignacion = notificarMecanicoAsignacion;
 window.notificarMecanicoCambioCita = notificarMecanicoCambioCita;

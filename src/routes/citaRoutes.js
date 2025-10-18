@@ -3,11 +3,9 @@ import citaController from "../controller/citaController.js";
 
 const router = express.Router();
 
-<<<<<<< HEAD
+
 router.get("/estadisticas", citaController.getEstadisticas); //reportes
-=======
-router.get("/estadisticas", citaController.getEstadisticas);
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 
 // Rutas de búsqueda por criterios
 router.get("/fecha/:fecha", citaController.getByFecha);
@@ -18,11 +16,9 @@ router.get("/mecanico/:mecanico_id", citaController.getByMecanicoId);
 // Rutas específicas para mecánicos
 router.get("/mis-citas-hoy/:mecanico_id", citaController.getMisCitasDelDia);
 router.get("/mis-proximas-citas/:mecanico_id/:dias", citaController.getMisProximasCitas);
-<<<<<<< HEAD
+
 router.get("/mis-estadisticas/:mecanico_id", citaController.getMisEstadisticas); //reportes
-=======
-router.get("/mis-estadisticas/:mecanico_id", citaController.getMisEstadisticas);
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 
 // Verificar disponibilidad de horarios
 router.get("/disponibilidad/verificar", citaController.verificarDisponibilidad);

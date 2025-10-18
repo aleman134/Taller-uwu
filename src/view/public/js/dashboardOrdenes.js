@@ -1,6 +1,6 @@
 // Determinar el rol del usuario actual
 function obtenerRolUsuario() {
-<<<<<<< HEAD
+
   const user = sessionStorage.getItem('usuario');
   if (!user) return null;
   try {
@@ -8,10 +8,7 @@ function obtenerRolUsuario() {
   } catch {
     return null;
   }
-=======
-  const user = JSON.parse(localStorage.getItem('usuario'));
-  return user ? user.rol : null;
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 }
 
 // Configurar la interfaz según el rol
@@ -94,12 +91,10 @@ function configurarCamposParaMecanico() {
     // Cambiar título del formulario si estamos en modo edición
     const titulo = document.querySelector('.register-container h2');
     if (titulo) {
-<<<<<<< HEAD
-      // CORRECCIÓN: usar window.ordenEnEdicion en lugar de window.editarEnEdicion
+
+
       if (window.ordenEnEdicion) {
-=======
-      if (window.editarEnEdicion) {
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
         titulo.textContent = 'Actualizar Orden de Trabajo';
       } else {
         titulo.textContent = 'Registro de Orden (Campos limitados)';
@@ -108,11 +103,9 @@ function configurarCamposParaMecanico() {
     
     // Cambiar texto del botón submit
     const submitBtn = document.querySelector('button[type="submit"]');
-<<<<<<< HEAD
+
     if (submitBtn && !window.ordenEnEdicion) {
-=======
-    if (submitBtn && !window.editarOrden) {
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
       submitBtn.textContent = 'Registrar Orden';
     }
   }
@@ -157,13 +150,13 @@ async function cargarMecanicoDeCita() {
   }
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
-// Filtrar por estado
+
+
+
+
 function filtrarPorEstado() {
-  const select = document.getElementById('filtroEstado');
+const select = document.getElementById('filtroEstado');
   if (!select) return;
   
   const estado = select.value;

@@ -3,21 +3,17 @@ function verificarAutenticacion(rolPermitido = null) {
   const user = JSON.parse(localStorage.getItem("usuario"));
 
   if (!user) {
-<<<<<<< HEAD
-    window.location.replace("/src/login.html");
-=======
-    window.location.replace("/src/view/public/login.html");
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
+    window.location.replace("/index.html");
+
     return false;
   }
 
   if (rolPermitido && user.rol !== rolPermitido) {
     alert("No tienes permisos para acceder a esta sección");
-<<<<<<< HEAD
-    window.location.replace("/src/login.html");
-=======
-    window.location.replace("/src/view/public/login.html");
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
+    window.location.replace("/index.html");
+
     return false;
   }
 
@@ -29,11 +25,9 @@ function iniciarVerificacionSesion(intervalo = 30000) {
   setInterval(() => {
     const user = localStorage.getItem("usuario");
     if (!user) {
-<<<<<<< HEAD
-      window.location.replace("/src/login.html");
-=======
-      window.location.replace("/src/view/public/login.html");
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
+      window.location.replace("/index.html");
+
     }
   }, intervalo);
 }

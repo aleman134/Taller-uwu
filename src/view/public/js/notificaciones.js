@@ -229,11 +229,9 @@ async function marcarTodasNotificacionesLeidasMecanico() {
   if (!usuario || !usuario.id) return alert("No se pudo determinar el usuario");
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_NOTIFICACIONES}/usuario/${usuario.id}/leer-todas`, {
-=======
-    const res = await fetch(`${API_URL_NOTIFICACIONES}/${usuario.id}/leer-todas`, {
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
       method: 'GET'
     });
     const data = await res.json();

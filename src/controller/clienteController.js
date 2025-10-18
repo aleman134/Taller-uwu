@@ -43,9 +43,7 @@ const clienteController = {
 
     update: async (req, res) => {
         try {
-            if (!req.user || req.user.rol !== "administrador") {
-                return res.status(403).json({ error: "No tienes permisos para modificar clientes" });
-            }
+
             const cliente = await Cliente.getById(req.params.id);
             if (!cliente) {
                 return res.status(404).json({ error: "Cliente no encontrado" });

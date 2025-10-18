@@ -788,7 +788,9 @@ body.register-page {
   transform: translateY(-5px);
 }
 
-/* Sidebar */
+/* ============================================
+   SIDEBAR CON FOOTER STICKY
+   ============================================ */
 .sidebar {
   position: fixed;
   left: 0;
@@ -799,6 +801,9 @@ body.register-page {
   color: white;
   transition: all 0.3s ease;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .sidebar.collapsed {
@@ -812,6 +817,7 @@ body.register-page {
   align-items: center;
   justify-content: space-between;
   position: relative;
+  flex-shrink: 0;
 }
 
 .sidebar-header h3 {
@@ -846,6 +852,27 @@ body.register-page {
 .nav-menu {
   list-style: none;
   padding: 20px 0;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar personalizado para el menú */
+.nav-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.nav-menu::-webkit-scrollbar-track {
+  background: #2c3e50;
+}
+
+.nav-menu::-webkit-scrollbar-thumb {
+  background: #e67e22;
+  border-radius: 3px;
+}
+
+.nav-menu::-webkit-scrollbar-thumb:hover {
+  background: #d35400;
 }
 
 .nav-item {
@@ -878,71 +905,53 @@ body.register-page {
   opacity: 0;
 }
 
-/* Footer del sidebar */
+/* ============================================
+   FOOTER STICKY DEL SIDEBAR
+   ============================================ */
 .sidebar-footer {
-  padding: 20px;
-  border-top: 1px solid #34495e;
+  position: sticky;
+  bottom: 0;
+  background: #2c3e50;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
   margin-top: auto;
-}
-
-.user-avatar-small {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background-color: #3498db;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-  margin-right: 10px;
   flex-shrink: 0;
-}
-
-.user-details-small span {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-details-small small {
-  font-size: 10px;
-  color: #bdc3c7;
-  text-transform: capitalize;
 }
 
 .logout-btn-sidebar {
   width: 100%;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .logout-btn-sidebar:hover {
-  background-color: #c0392b;
+  background: #e74c3c;
+  color: white;
+  transform: translateX(5px);
 }
 
 .logout-icon {
-  margin-right: 8px;
-  font-size: 16px;
+  font-size: 1.1rem;
 }
 
 .sidebar.collapsed .logout-btn-sidebar span {
-  opacity: 0;
-  width: 0;
-  overflow: hidden;
+  display: none;
+}
+
+.sidebar.collapsed .logout-btn-sidebar {
+  padding: 0.75rem;
+  justify-content: center;
 }
 
 /* Main Content */
@@ -1151,6 +1160,16 @@ body.register-page {
   #estadisticasServicios th,
   #estadisticasServicios td {
     padding: 8px !important;
+  }
+
+  /* Footer sidebar en móvil */
+  .sidebar-footer {
+    padding: 0.75rem;
+  }
+  
+  .logout-btn-sidebar {
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 }
 

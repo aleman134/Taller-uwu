@@ -70,19 +70,14 @@ function showSection(sectionId) {
       cargarFormularioNotificaciones();
       break;  
     case "history":
-<<<<<<< HEAD
+
       title.textContent = "Historial de Servicios";
       cargarFormularioHistorial();
       break;
     case "reports":
       title.textContent = "Reportes del Taller";
       cargarFormularioReportes();
-=======
-      title.textContent = "Historial";
-      break;
-    case "reports":
-      title.textContent = "Reportes";
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
       break;
     case "users":
       title.textContent = "Gestión de Usuarios";

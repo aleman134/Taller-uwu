@@ -23,24 +23,21 @@ dotenv.config();
 const app = express();
 
 // Middlewares
-<<<<<<< HEAD
+
 app.use(express.json());
-=======
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 app.use(cors({
   origin: 'http://127.0.0.1:5500',
   credentials: true
 }));
 
-<<<<<<< HEAD
+
 // Configuración de archivos estáticos
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, 'src/view')));
-=======
-app.use(express.json());
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
 
 // Rutas
 app.get('/', (req, res) => {
@@ -59,15 +56,7 @@ app.use('/api/notificaciones', notificacionesRoutes); //si sirve
 app.use('/api/repuestos-utilizados', repuestoUtilizadoRoutes); //si sirve
 app.use('/api/servicios-realizados', servicioRealizadoRoutes); //si sirve
 
-<<<<<<< HEAD
-=======
-// Configuración de archivos estáticos
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, 'src/view')));
-
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
 // Puerto
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));

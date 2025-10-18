@@ -104,10 +104,7 @@ async function manejarSubmitFormularioOrden(e) {
       const res = await fetch(`${API_URL_ORDENES}/${window.ordenEnEdicion}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-<<<<<<< HEAD
-=======
-        credentials: 'include',
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
         body: JSON.stringify(datos),
       });
 
@@ -141,10 +138,7 @@ async function manejarSubmitFormularioOrden(e) {
       const res = await fetch(API_URL_ORDENES, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-<<<<<<< HEAD
-=======
-        credentials: 'include',
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
         body: JSON.stringify(datos),
       });
 
@@ -184,10 +178,7 @@ async function crearNotificacionNuevaOrden(mecanicoId, ordenCreada) {
     const res = await fetch(API_CONFIG.notificaciones, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-<<<<<<< HEAD
-=======
-      credentials: 'include',
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
       body: JSON.stringify(notificacion)
     });
     
@@ -226,10 +217,7 @@ async function crearNotificacionCambioMecanico(mecanicoId, ordenData) {
     const res = await fetch(API_CONFIG.notificaciones, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-<<<<<<< HEAD
-=======
-      credentials: 'include',
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
       body: JSON.stringify(notificacion)
     });
     
@@ -277,11 +265,9 @@ async function cargarOrdenesPorEstado(estado) {
   if (!tbody) return;
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/estado/${estado}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/estado/${estado}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -307,12 +293,10 @@ async function cargarOrdenesPorMecanico(mecanicoId) {
   if (!tbody) return;
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/mecanico/${mecanicoId}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/mecanico/${mecanicoId}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
-    
+
+  
     if (res.ok) {
       const ordenes = await res.json();
       
@@ -339,12 +323,9 @@ async function cargarOrdenesPorCliente(clienteId) {
   if (!tbody) return;
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/cliente/${clienteId}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/cliente/${clienteId}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
-    
+
     if (res.ok) {
       const ordenes = await res.json();
       
@@ -371,11 +352,9 @@ async function cargarOrdenesVencidas() {
   if (!tbody) return;
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/vencidas/vencidas`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/vencidas/vencidas`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -402,11 +381,9 @@ async function cargarOrdenesProximasAVencer(dias = 3) {
   if (!tbody) return;
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/vencer/${dias}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/vencer/${dias}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
@@ -438,11 +415,9 @@ async function buscarOrdenPorId() {
   }
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/${id}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/${id}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     
     if (res.ok) {
       const respuesta = await res.json();
@@ -491,11 +466,9 @@ function mostrarTodasLasOrdenes() {
 // Editar orden
 async function editarOrden(id) {
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/${id}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/${id}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     if (res.ok) {
       const respuesta = await res.json();
       const orden = Array.isArray(respuesta) ? respuesta[0] : respuesta;
@@ -574,11 +547,9 @@ async function eliminarOrden(id) {
   if (!confirm("¿Seguro que quieres eliminar esta orden de trabajo?")) return;
 
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/${id}`, { method: "DELETE"});
-=======
-    const res = await fetch(`${API_URL_ORDENES}/${id}`, { method: "DELETE", credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     if (res.ok) {
       alert("Orden eliminada exitosamente");
       cargarOrdenes();
@@ -623,17 +594,12 @@ function renderOrdenes(ordenes) {
       : (orden.cliente_id || 'N/A');
     
     // Mostrar información del vehículo (marca, modelo, año y placa)
-<<<<<<< HEAD
+
     const vehiculoInfo = orden.vehiculo_info || `${orden.vehiculo_id || 'N/A'}`;
     
     // Mostrar nombre del mecánico o ID
     const mecanicoInfo = orden.nombre_mecanico || (orden.mecanico_id ? `${orden.mecanico_id}` : 'N/A');
-=======
-    const vehiculoInfo = orden.vehiculo_info || `ID: ${orden.vehiculo_id || 'N/A'}`;
-    
-    // Mostrar nombre del mecánico o ID
-    const mecanicoInfo = orden.nombre_mecanico || (orden.mecanico_id ? `ID: ${orden.mecanico_id}` : 'N/A');
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     
     // Calcular costo total (usar el que viene del backend si existe)
     const costoTotal = orden.costo_total 
@@ -692,11 +658,9 @@ function formatearEstado(estado) {
 // Ver reporte completo de una orden
 async function verReporteCompleto(id) {
   try {
-<<<<<<< HEAD
+
     const res = await fetch(`${API_URL_ORDENES}/reporte/${id}`);
-=======
-    const res = await fetch(`${API_URL_ORDENES}/reporte/${id}`, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     
     if (!res.ok) {
       throw new Error('Error al cargar el reporte');
@@ -828,11 +792,9 @@ function mostrarModalReporte(reporte) {
 
 async function cargarClientesOrden() {
   try {
-<<<<<<< HEAD
+
     const res = await fetch(API_CONFIG.clientes);
-=======
-    const res = await fetch(API_CONFIG.clientes, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     const clientes = await res.json();
     
     const select = document.getElementById('cliente_id');
@@ -857,11 +819,9 @@ async function cargarVehiculosOrdenes(clienteId = null) {
       ? `${API_CONFIG.vehiculos}/cliente/${clienteId}` 
       : API_CONFIG.vehiculos;
     
-<<<<<<< HEAD
+
     const res = await fetch(url);
-=======
-    const res = await fetch(url, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     const vehiculos = await res.json();
     
     const select = document.getElementById('vehiculo_id');
@@ -882,11 +842,9 @@ async function cargarVehiculosOrdenes(clienteId = null) {
 
 async function cargarMecanicos() {
   try {
-<<<<<<< HEAD
+
     const res = await fetch(API_CONFIG.usuarios);
-=======
-    const res = await fetch(API_CONFIG.usuarios, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     const usuarios = await res.json();
     
     const mecanicos = usuarios.filter(u => u.rol === 'mecanico' && u.estado === 'activo');
@@ -913,11 +871,9 @@ async function cargarCitasOrden(clienteId = null) {
       ? `${API_CONFIG.citas}/cliente/${clienteId}` 
       : API_CONFIG.citas;
     
-<<<<<<< HEAD
+
     const res = await fetch(url);
-=======
-    const res = await fetch(url, { credentials: 'include' });
->>>>>>> bd88513e37169740585f71e73c6baca4887e03d1
+
     const citas = await res.json();
     
     const select = document.getElementById('cita_id');
