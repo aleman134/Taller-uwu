@@ -52,7 +52,7 @@ function ocultarFormularioRegistroClientes() {
 }
 
 function inicializarVistaClientes() {
-  console.log('Iniciando vista de clientes...');
+  
   
   setTimeout(() => {
     configurarInterfazClientesPorRol();

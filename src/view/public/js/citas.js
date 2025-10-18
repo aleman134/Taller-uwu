@@ -52,7 +52,7 @@ function configurarValidacionFecha() {
     const validacion = validarFechaHorario(this.value);
     
     if (!validacion.valida) {
-      alert(validacion.mensaje);
+      await mostrarDialogo(validacion.mensaje);
       this.value = '';
       return;
     }
@@ -136,7 +136,7 @@ async function verificarDisponibilidadAutomatica() {
     const data = await res.json();
     
     if (!data.disponible) {
-      mostrarAlertaDisponibilidad(data);
+      await mostrarAlertaDisponibilidad(data);
     }
     
     return data;
@@ -146,7 +146,8 @@ async function verificarDisponibilidadAutomatica() {
   }
 }
 
-function mostrarAlertaDisponibilidad(data) {
+
+async function mostrarAlertaDisponibilidad(data) {
   const mensaje = data.mensaje || "Horario no disponible";
   const horarios = data.horarios_alternativos || [];
   
@@ -155,34 +156,67 @@ function mostrarAlertaDisponibilidad(data) {
       `• ${h.fecha_formateada}`
     ).join('\n');
     
-    const respuesta = confirm(
-      `${mensaje}\n\nHorarios alternativos disponibles:\n${horariosHTML}\n\n ¿Desea seleccionar uno de estos horarios?`
+    const respuesta = await mostrarDialogoConfirmacion(
+      `${mensaje}\n\nHorarios alternativos disponibles:\n${horariosHTML}\n\n¿Desea seleccionar uno de estos horarios?`
     );
     
     if (respuesta) {
       mostrarModalHorariosAlternativos(horarios);
     }
   } else {
-    alert(mensaje);
+    await mostrarDialogo(mensaje);
   }
 }
 
+
 function mostrarModalHorariosAlternativos(horarios) {
-  const opciones = horarios.map((h, index) => 
-    `${index + 1}. ${h.fecha_formateada}`
-  ).join('\n');
+  const modalHTML = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.7); z-index: 10000; display: flex; 
+                align-items: center; justify-content: center;" id="modalHorarios">
+      <div style="background: white; padding: 30px; border-radius: 12px; 
+                  max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <h3 style="margin-bottom: 20px; color: #333;">Seleccione un Horario Alternativo</h3>
+        <select id="selectHorario" style="width: 100%; padding: 10px; margin-bottom: 20px; 
+                                          border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+          <option value="">-- Seleccione un horario --</option>
+          ${horarios.map((h, index) => 
+            `<option value="${index}">${h.fecha_formateada}</option>`
+          ).join('')}
+        </select>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button onclick="document.getElementById('modalHorarios').remove()" 
+                  class="btnCancelar"
+                  style="padding: 10px 20px; background: #f44336; color: white; 
+                         border: none; border-radius: 6px; cursor: pointer;">
+            Cancelar
+          </button>
+          <button onclick="seleccionarHorarioAlternativo()" 
+                  class="btnAceptar"
+                  style="padding: 10px 20px; background: #4CAF50; color: white; 
+                         border: none; border-radius: 6px; cursor: pointer;">
+            Aceptar
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
   
-  const seleccion = prompt(
-    `Seleccione un horario alternativo (ingrese el número):\n\n${opciones}`
-  );
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
   
-  if (seleccion) {
-    const index = parseInt(seleccion) - 1;
-    if (index >= 0 && index < horarios.length) {
-      document.getElementById("fechaCita").value = horarios[index].fecha_hora.slice(0, 16);
-      actualizarMecanicosDisponibles();
+  window.seleccionarHorarioAlternativo = async function() {
+    const select = document.getElementById('selectHorario');
+    const index = parseInt(select.value);
+    
+    if (isNaN(index) || index < 0 || index >= horarios.length) {
+      await mostrarDialogo('Por favor seleccione un horario válido');
+      return;
     }
-  }
+    
+    document.getElementById("fechaCita").value = horarios[index].fecha_hora.slice(0, 16);
+    actualizarMecanicosDisponibles();
+    document.getElementById('modalHorarios').remove();
+  };
 }
 
 // actualiza mecanicos disponibles
@@ -233,7 +267,7 @@ async function manejarSubmitFormularioCita(e) {
   // valida fecha y horario
   const validacion = validarFechaHorario(fechaCita);
   if (!validacion.valida) {
-    alert(validacion.mensaje);
+    await mostrarDialogo(validacion.mensaje);
     return;
   }
 
@@ -241,7 +275,7 @@ async function manejarSubmitFormularioCita(e) {
   const disponibilidad = await verificarDisponibilidadAutomatica();
   
   if (disponibilidad && !disponibilidad.disponible) {
-    alert("Por favor, seleccione un horario disponible antes de continuar.");
+    await mostrarDialogo("Por favor, seleccione un horario disponible antes de continuar.");
     return;
   }
 
@@ -270,17 +304,17 @@ async function manejarSubmitFormularioCita(e) {
           await notificarMecanicoCambioCita(window.citaEnEdicion, mecanicoId);
         }
 
-        alert("Cita actualizada exitosamente");
+        await mostrarDialogo("Cita actualizada exitosamente");
         cancelarEdicionCitas();
         cargarCitasCita();
       } else {
         const error = await res.json();
-        alert("Error: " + (error.error || error.message || "Error desconocido"));
+        await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
       }
     } else {
       // CREAR nueva cita
       if (!datos.cliente_id || !datos.vehiculo_id || !datos.fecha_cita || !datos.motivo) {
-        alert("Cliente, vehículo, fecha y motivo son obligatorios para crear cita");
+        await mostrarDialogo("Cliente, vehículo, fecha y motivo son obligatorios para crear cita");
         return;
       }
       
@@ -303,31 +337,35 @@ async function manejarSubmitFormularioCita(e) {
         if (vehiculoSelectCita) vehiculoSelectCita.disabled = true;
         
         cargarCitasCita();
-        alert("Cita registrada exitosamente");
+        await mostrarDialogo("Cita registrada exitosamente");
       } else {
         const error = await res.json();
-        alert("Error: " + (error.error || error.message || "Error desconocido"));
+        await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
       }
     }
   } catch (err) {
     console.error("Error:", err);
     
-    // guarda temporalmente si hay error de conexion
-    if (confirm("Error de conexión. ¿Desea guardar la cita localmente para sincronizar después?")) {
-      guardarCitaTemporalmente(datos);
+
+    const guardarOffline = await mostrarDialogoConfirmacion(
+      "Error de conexión. ¿Desea guardar la cita localmente para sincronizar después?"
+    );
+    
+    if (guardarOffline) {
+      await guardarCitaTemporalmente(datos);
     }
   }
 }
 
-// guarda temporalmente offline
-function guardarCitaTemporalmente(datos) {
+
+async function guardarCitaTemporalmente(datos) {
   const citasTemporales = JSON.parse(localStorage.getItem('citasTemporales') || '[]');
   citasTemporales.push({
     ...datos,
     timestamp: new Date().toISOString()
   });
   localStorage.setItem('citasTemporales', JSON.stringify(citasTemporales));
-  alert("Cita guardada temporalmente. Se sincronizará cuando se restablezca la conexión.");
+  await mostrarDialogo("Cita guardada temporalmente. Se sincronizará cuando se restablezca la conexión.");
 }
 
 async function sincronizarCitasTemporales() {
@@ -360,7 +398,7 @@ async function sincronizarCitasTemporales() {
   localStorage.setItem('citasTemporales', JSON.stringify(citasTemporales));
   
   if (sincronizadas > 0) {
-    alert(`${sincronizadas} cita(s) sincronizada(s) exitosamente`);
+    await mostrarDialogo(`${sincronizadas} cita(s) sincronizada(s) exitosamente`);
     cargarCitasCita();
   }
 }
@@ -387,7 +425,7 @@ async function cargarCitasCita() {
       renderCitas(citas);
     } else {
       console.error("La respuesta no es un array:", citas);
-      alert("Error: El servidor no devolvió un array de citas");
+      await mostrarDialogo("Error: El servidor no devolvió un array de citas");
     }
   } catch (error) {
     console.error("Error al cargar citas:", error);
@@ -405,7 +443,7 @@ async function buscarCitaPorId() {
   const id = inputBuscarCita.value.trim();
 
   if (!id) {
-    alert("Ingrese un ID válido");
+    await mostrarDialogo("Ingrese un ID válido");
     return;
   }
 
@@ -427,17 +465,17 @@ async function buscarCitaPorId() {
         inputBuscarCita.value = '';
       } else {
         console.error("No se pudo extraer cita válida de:", respuesta);
-        alert("Cita no encontrada o datos incompletos");
+        await mostrarDialogo("Cita no encontrada o datos incompletos");
       }
     } else if (res.status === 404) {
-      alert("Cita no encontrada");
+      await mostrarDialogo("Cita no encontrada");
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (err) {
     console.error("Error al buscar cita:", err);
-    alert("Error al buscar cita. Verifica la conexión con el servidor.");
+    await mostrarDialogo("Error al buscar cita. Verifica la conexión con el servidor.");
   }
 }
 
@@ -500,7 +538,7 @@ async function buscarCitasPorCliente() {
   const clienteIdCita = selectClienteCita.value.trim();
 
   if (!clienteIdCita) {
-    alert("Seleccione un cliente válido");
+    await mostrarDialogo("Seleccione un cliente válido");
     return;
   }
 
@@ -514,15 +552,15 @@ async function buscarCitasPorCliente() {
         renderCitas(citas);
         selectClienteCita.value = '';
       } else {
-        alert("No se encontraron citas para este cliente");
+        await mostrarDialogo("No se encontraron citas para este cliente");
       }
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (err) {
     console.error("Error al buscar citas por cliente:", err);
-    alert("Error al buscar citas. Verifica la conexión con el servidor.");
+    await mostrarDialogo("Error al buscar citas. Verifica la conexión con el servidor.");
   }
 }
 
@@ -532,7 +570,7 @@ async function buscarCitasPorMecanico() {
   const mecanicoIdCita = selectMecanicoCita.value.trim();
 
   if (!mecanicoIdCita) {
-    alert("Seleccione un mecánico válido");
+    await mostrarDialogo("Seleccione un mecánico válido");
     return;
   }
 
@@ -546,15 +584,15 @@ async function buscarCitasPorMecanico() {
         renderCitas(citas);
         selectMecanicoCita.value = '';
       } else {
-        alert("No se encontraron citas para este mecánico");
+        await mostrarDialogo("No se encontraron citas para este mecánico");
       }
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (err) {
     console.error("Error al buscar citas por mecánico:", err);
-    alert("Error al buscar citas. Verifica la conexión con el servidor.");
+    await mostrarDialogo("Error al buscar citas. Verifica la conexión con el servidor.");
   }
 }
 
@@ -564,7 +602,7 @@ async function buscarCitasPorFecha() {
   const fechaCita = inputFechaCita.value;
 
   if (!fechaCita) {
-    alert("Seleccione una fecha válida");
+    await mostrarDialogo("Seleccione una fecha válida");
     return;
   }
 
@@ -578,15 +616,15 @@ async function buscarCitasPorFecha() {
         renderCitas(citas);
         inputFechaCita.value = '';
       } else {
-        alert("No se encontraron citas para esta fecha");
+        await mostrarDialogo("No se encontraron citas para esta fecha");
       }
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (err) {
     console.error("Error al buscar citas por fecha:", err);
-    alert("Error al buscar citas. Verifica la conexión con el servidor.");
+    await mostrarDialogo("Error al buscar citas. Verifica la conexión con el servidor.");
   }
 }
 
@@ -596,7 +634,7 @@ async function buscarCitasPorEstado() {
   const estadoCita = selectEstadoCita.value;
 
   if (!estadoCita) {
-    alert("Seleccione un estado válido");
+    await mostrarDialogo("Seleccione un estado válido");
     return;
   }
 
@@ -609,15 +647,15 @@ async function buscarCitasPorEstado() {
       if (Array.isArray(citas) && citas.length > 0) {
         renderCitas(citas);
       } else {
-        alert("No se encontraron citas con este estado");
+        await mostrarDialogo("No se encontraron citas con este estado");
       }
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (err) {
     console.error("Error al buscar citas por estado:", err);
-    alert("Error al buscar citas. Verifica la conexión con el servidor.");
+    await mostrarDialogo("Error al buscar citas. Verifica la conexión con el servidor.");
   }
 }
 
@@ -666,35 +704,73 @@ async function editarCita(id) {
     }
   } catch (err) {
     console.error("Error al cargar cita para editar:", err);
-    alert('Error al cargar cita para editar');
+    await mostrarDialogo('Error al cargar cita para editar');
   }
 }
 
-// Cambiar estado de cita
-async function cambiarEstadoCita(id, nuevoEstado) {
-  const observaciones = prompt("Observaciones (opcional):");
-  
-  try {
-    const res = await fetch(`${API_URL_CITAS}/estado/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        nuevo_estado: nuevoEstado,
-        observaciones: observaciones 
-      }),
-    });
 
-    if (res.ok) {
-      alert("Estado de la cita actualizado exitosamente");
-      cargarCitasCita();
-    } else {
-      const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+async function cambiarEstadoCita(id, nuevoEstado) {
+  // Crear modal para ingresar observaciones
+  const modalHTML = `
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.7); z-index: 10000; display: flex; 
+                align-items: center; justify-content: center;" id="modalObservaciones">
+      <div style="background: white; padding: 30px; border-radius: 12px; 
+                  max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <h3 style="margin-bottom: 20px; color: #333;">Cambiar Estado de Cita</h3>
+        <p style="margin-bottom: 15px; color: #666;">Observaciones (opcional):</p>
+        <textarea id="inputObservaciones" 
+                  style="width: 100%; padding: 10px; margin-bottom: 20px; 
+                         border: 1px solid #ddd; border-radius: 6px; min-height: 100px;
+                         font-family: inherit; resize: vertical;"
+                  placeholder="Ingrese observaciones sobre el cambio de estado..."></textarea>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button onclick="document.getElementById('modalObservaciones').remove()" 
+                  class="btnCancelar"
+                  style="padding: 10px 20px; background: #f44336; color: white; 
+                         border: none; border-radius: 6px; cursor: pointer;">
+            Cancelar
+          </button>
+          <button onclick="confirmarCambioEstadoCita(${id}, '${nuevoEstado}')" 
+                  class="btnAceptar"
+                  style="padding: 10px 20px; background: #4CAF50; color: white; 
+                         border: none; border-radius: 6px; cursor: pointer;">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  // Función global para confirmar
+  window.confirmarCambioEstadoCita = async function(citaId, estado) {
+    const observaciones = document.getElementById('inputObservaciones').value.trim();
+    document.getElementById('modalObservaciones').remove();
+    
+    try {
+      const res = await fetch(`${API_URL_CITAS}/estado/${citaId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          nuevo_estado: estado,
+          observaciones: observaciones || null
+        }),
+      });
+
+      if (res.ok) {
+        await mostrarDialogo("Estado de la cita actualizado exitosamente");
+        cargarCitasCita();
+      } else {
+        const error = await res.json();
+        await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
+      }
+    } catch (err) {
+      console.error("Error al cambiar estado:", err);
+      await mostrarDialogo("Error al cambiar estado de la cita");
     }
-  } catch (err) {
-    console.error("Error al cambiar estado:", err);
-    alert("Error al cambiar estado de la cita");
-  }
+  };
 }
 
 
@@ -716,22 +792,24 @@ function cancelarEdicionCitas() {
   if (cancelBtnCita) cancelBtnCita.style.display = 'none';
 }
 
-// Eliminar cita
+
 async function eliminarCita(id) {
-  if (!confirm("¿Seguro que quieres eliminar esta cita?")) return;
+  const confirmado = await mostrarDialogoConfirmacion("¿Seguro que quieres eliminar esta cita?");
+  
+  if (!confirmado) return;
 
   try {
     const res = await fetch(`${API_URL_CITAS}/${id}`, { method: "DELETE" });
     if (res.ok) {
-      alert("Cita eliminada exitosamente");
+      await mostrarDialogo("Cita eliminada exitosamente");
       cargarCitasCita();
     } else {
       const error = await res.json();
-      alert("Error al eliminar cita: " + (error.error || error.message));
+      await mostrarDialogo("Error al eliminar cita: " + (error.error || error.message));
     }
   } catch (err) {
     console.error("Error al eliminar:", err);
-    alert("Error al eliminar cita");
+    await mostrarDialogo("Error al eliminar cita");
   }
 }
 
@@ -966,7 +1044,7 @@ async function notificarMecanicoAsignacion(citaId, mecanicoId) {
     
     if (!res.ok) {
       console.error('Error al crear notificación para mecánico');
-    } else {
+
     }
   } catch (error) {
     console.error('Error al notificar mecánico:', error);
@@ -1011,7 +1089,8 @@ async function notificarMecanicoCambioCita(citaId, mecanicoId) {
     
     if (!res.ok) {
       console.error('Error al crear notificación de reasignación');
-    } else {
+
+    
     }
   } catch (error) {
     console.error('Error al notificar cambio:', error);

@@ -1,0 +1,100 @@
+.alertas {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    animation: aparecerAlerta 0.3s ease;
+}
+
+.alertas::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.contenido-alerta {
+    padding: 30px;
+    position: relative;
+}
+
+.cerrar-alerta {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+}
+
+.cerrar-alerta:hover {
+    color: #333;
+}
+
+#mensaje-alerta {
+    margin: 20px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.acciones-alerta {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btnAceptar, .btnCancelar {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btnAceptar {
+    background: #4CAF50;
+    color: white;
+}
+
+.btnAceptar:hover {
+    background: #45a049;
+}
+
+.btnCancelar {
+    background: #f44336;
+    color: white;
+}
+
+.btnCancelar:hover {
+    background: #da190b;
+}
+
+/* Animaciones */
+@keyframes aparecerAlerta {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.alertas.cerrando {
+    animation: desaparecerAlerta 0.3s ease;
+}
+
+@keyframes desaparecerAlerta {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}

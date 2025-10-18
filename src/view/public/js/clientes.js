@@ -33,14 +33,14 @@ async function manejarSubmitFormularioClientes(e) {
 
   // Validar campos obligatorios
   if (!datos.nombre || !datos.apellido || !datos.dpi || !datos.telefono || !datos.correo || !datos.direccion) {
-    alert("Todos los campos son obligatorios");
+    await mostrarDialogo("Todos los campos son obligatorios");
     return;
   }
 
   // Validar formato de correo
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(datos.correo)) {
-    alert("Por favor ingrese un correo electrónico válido");
+    await mostrarDialogo("Por favor ingrese un correo electrónico válido");
     return;
   }
 
@@ -54,11 +54,12 @@ async function manejarSubmitFormularioClientes(e) {
       });
 
       if (res.ok) {
-        alert("Cliente actualizado exitosamente");
+        await mostrarDialogo("Cliente actualizado exitosamente");
         cancelarEdicionCliente();
         cargarClientes();
       } else {
         const error = await res.json();
+        await mostrarDialogo("Error al actualizar el cliente");
       }
     } else {
       // Crear nuevo cliente
@@ -71,13 +72,15 @@ async function manejarSubmitFormularioClientes(e) {
       if (res.ok) {
         e.target.reset();
         cargarClientes();
-        alert("Cliente registrado exitosamente");
+        await mostrarDialogo("Cliente registrado exitosamente");
       } else {
         const error = await res.json();
+        await mostrarDialogo("Error al registrar el cliente");
       }
     }
   } catch (err) {
     console.error("Error:", err);
+    await mostrarDialogo("Error en la operación. Intente nuevamente");
   }
 }
 
@@ -105,6 +108,7 @@ async function cargarClientes() {
     }
   } catch (error) {
     console.error("Error al cargar clientes:", error);
+    await mostrarDialogo("Error al cargar los clientes");
   }
 }
 
@@ -114,7 +118,7 @@ async function buscarClientePorId() {
   const id = inputBuscar.value.trim();
 
   if (!id) {
-    alert("Ingrese un ID válido");
+    await mostrarDialogo("Ingrese un ID válido");
     return;
   }
 
@@ -136,15 +140,17 @@ async function buscarClientePorId() {
         inputBuscar.value = '';
       } else {
         console.error("No se pudo extraer cliente válido de:", respuesta);
-        alert("Cliente no encontrado o datos incompletos");
+        await mostrarDialogo("Cliente no encontrado o datos incompletos");
       }
     } else if (res.status === 404) {
-      alert("Cliente no encontrado");
+      await mostrarDialogo("Cliente no encontrado");
     } else {
       const error = await res.json();
+      await mostrarDialogo("Error en la búsqueda");
     }
   } catch (err) {
     console.error("Error al buscar cliente:", err);
+    await mostrarDialogo("Error al buscar el cliente");
   }
 }
 
@@ -178,6 +184,7 @@ async function editarCliente(id) {
     }
   } catch (err) {
     console.error("Error al cargar cliente para editar:", err);
+    await mostrarDialogo("Error al cargar el cliente");
   }
 }
 
@@ -201,18 +208,22 @@ function cancelarEdicionCliente() {
 
 // Eliminar cliente
 async function eliminarCliente(id) {
-  if (!confirm("¿Seguro que quieres eliminar este cliente?")) return;
+  const confirmado = await mostrarDialogoConfirmacion("¿Seguro que quieres eliminar este cliente?");
+  
+  if (!confirmado) return;
 
   try {
     const res = await fetch(`${API_URL_CLIENTES}/${id}`, { method: "DELETE" });
     if (res.ok) {
-      alert("Cliente eliminado exitosamente");
+      await mostrarDialogo("Cliente eliminado exitosamente");
       cargarClientes();
     } else {
       const error = await res.json();
+      await mostrarDialogo("Error al eliminar el cliente");
     }
   } catch (err) {
     console.error("Error al eliminar:", err);
+    await mostrarDialogo("Error al eliminar el cliente");
   }
 }
 

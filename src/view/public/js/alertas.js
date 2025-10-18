@@ -19,8 +19,14 @@ function mostrarDialogo(mensaje) {
         const btnCancelar = document.getElementById('btnCancelarDialogo');
         const btnCerrar = dialogo.querySelector('.cerrar-alerta');
 
+        // Limpiar listeners anteriores creando nuevos elementos
+        const newBtnAceptar = btnAceptar.cloneNode(true);
+        const newBtnCancelar = btnCancelar.cloneNode(true);
+        btnAceptar.parentNode.replaceChild(newBtnAceptar, btnAceptar);
+        btnCancelar.parentNode.replaceChild(newBtnCancelar, btnCancelar);
+
         mensajeAlerta.textContent = mensaje;
-        btnCancelar.style.display = 'none';
+        newBtnCancelar.style.display = 'none';
         dialogo.showModal();
 
         const cerrar = async () => {
@@ -28,8 +34,8 @@ function mostrarDialogo(mensaje) {
             resolve();
         };
 
-        btnAceptar.onclick = cerrar;
-        btnCerrar.onclick = cerrar;
+        newBtnAceptar.addEventListener('click', cerrar, { once: true });
+        btnCerrar.addEventListener('click', cerrar, { once: true });
     });
 }
 
@@ -42,8 +48,14 @@ function mostrarDialogoConfirmacion(mensaje) {
         const btnCancelar = document.getElementById('btnCancelarDialogo');
         const btnCerrar = dialogo.querySelector('.cerrar-alerta');
 
+        // Limpiar listeners anteriores creando nuevos elementos
+        const newBtnAceptar = btnAceptar.cloneNode(true);
+        const newBtnCancelar = btnCancelar.cloneNode(true);
+        btnAceptar.parentNode.replaceChild(newBtnAceptar, btnAceptar);
+        btnCancelar.parentNode.replaceChild(newBtnCancelar, btnCancelar);
+
         mensajeAlerta.textContent = mensaje;
-        btnCancelar.style.display = 'inline-block';
+        newBtnCancelar.style.display = 'inline-block';
         dialogo.showModal();
 
         const confirmar = async () => {
@@ -56,8 +68,8 @@ function mostrarDialogoConfirmacion(mensaje) {
             resolve(false);
         };
 
-        btnAceptar.onclick = confirmar;
-        btnCancelar.onclick = cancelar;
-        btnCerrar.onclick = cancelar;
+        newBtnAceptar.addEventListener('click', confirmar, { once: true });
+        newBtnCancelar.addEventListener('click', cancelar, { once: true });
+        btnCerrar.addEventListener('click', cancelar, { once: true });
     });
 }

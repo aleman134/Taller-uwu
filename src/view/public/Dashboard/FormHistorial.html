@@ -6,6 +6,7 @@
   <title>Historial de Servicios</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/alertas.css">
 </head>
 <body class="register-page">
   <div class="register-container">
@@ -53,7 +54,19 @@
     </div>
   </div>
 
+  <dialog class="alertas" id="dialogo-alerta">
+            <div class="contenido-alerta">
+                <span class="cerrar-alerta">&times;</span>
+                <p id="mensaje-alerta"></p>
+                <div class="acciones-alerta">
+                    <button id="btnCancelarDialogo" class="btnCancelar">Cancelar</button>
+                    <button id="btnAceptarDialogo" class="btnAceptar">Aceptar</button>
+                </div>
+            </div>
+</dialog>
+
   <script src="../js/config.js"></script>
+  <script src="../js/alertas.js"></script>
   <script src="../js/reportesEhistorial.js"></script>
   <script src="../js/dashboardHistorial.js"></script>
 </body>
