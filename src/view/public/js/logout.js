@@ -3,8 +3,6 @@ async function logout() {
   
   if (confirmado) {
     localStorage.removeItem("usuario");
-
     window.location.replace("/index.html");
-    
   }
 }

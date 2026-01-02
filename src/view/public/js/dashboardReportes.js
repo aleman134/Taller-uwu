@@ -37,7 +37,7 @@ function ocultarFiltrosYControlesReportes() {
   document.head.appendChild(style);
 }
 
-// =================== Cargar contenido HTML en la sección ===================
+//Cargar contenido HTML
 function cargarFormularioReportes() {
   const section = document.getElementById('reports');
   if (!section) return;
@@ -159,7 +159,7 @@ function cargarFormularioReportes() {
   cargarReportes();
 }
 
-// =================== Cargar datos de reportes ===================
+//Cargar datos de reportes 
 async function cargarReportes() {
   try {
     const fechaFin = new Date().toISOString().split('T')[0]; // Hoy
@@ -221,7 +221,6 @@ async function cargarReportes() {
     console.error("Error al cargar reportes:", error);
   }
 }
-
 
 function mostrarReporteEnTabla(idTabla, idHead, data) {
   const tabla = document.getElementById(idTabla);
@@ -305,20 +304,18 @@ function mostrarReporteEnTabla(idTabla, idHead, data) {
   }
 }
 
-
-
-// =================== Reporte por período ===================
+//Reporte por período 
 async function generarResumenPeriodo() {
   const inicio = document.getElementById("fechaInicio").value;
   const fin = document.getElementById("fechaFin").value;
 
   if (!inicio || !fin) {
-    alert("Por favor, selecciona un rango de fechas válido");
+    await mostrarDialogo("Por favor, selecciona un rango de fechas válido");
     return;
   }
 
   if (new Date(inicio) > new Date(fin)) {
-    alert("La fecha de inicio debe ser anterior a la fecha fin");
+    await mostrarDialogo("La fecha de inicio debe ser anterior a la fecha fin");
     return;
   }
 
@@ -345,7 +342,7 @@ async function generarResumenPeriodo() {
 
   } catch (error) {
     console.error("Error al generar resumen:", error);
-    alert("Error al generar el resumen del período");
+    await mostrarDialogo("Error al generar el resumen del período");
   }
 }
 
@@ -358,7 +355,6 @@ function formatearNombreColumna(nombre) {
     .join(' ');
 }
 
-// =================== Exposición global ===================
 window.obtenerRolUsuario = obtenerRolUsuario;
 window.configurarInterfazReportesPorRol = configurarInterfazReportesPorRol;
 window.cargarFormularioReportes = cargarFormularioReportes;

@@ -121,17 +121,17 @@ async function manejarSubmitFormularioOrden(e) {
           }
         }
 
-        alert("Orden actualizada exitosamente");
+        await mostrarDialogo("Orden actualizada exitosamente");
         cancelarEdicionOrdenes();
         cargarOrdenes();
       } else {
         const error = await res.json();
-        alert("Error: " + (error.error || error.message || "Error desconocido"));
+        await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
       }
     } else {
       // Crear nueva orden (validar campos obligatorios)
       if (!datos.cliente_id || !datos.vehiculo_id || !datos.cita_id || !datos.estado) {
-        alert("Cliente, vehículo, cita y estado son obligatorios");
+        await mostrarDialogo("Cliente, vehículo, cita y estado son obligatorios");
         return;
       }
       
@@ -152,15 +152,15 @@ async function manejarSubmitFormularioOrden(e) {
 
         e.target.reset();
         cargarOrdenes();
-        alert("Orden registrada exitosamente");
+        await mostrarDialogo("Orden registrada exitosamente");
       } else {
         const error = await res.json();
-        alert("Error: " + (error.error || error.message || "Error desconocido"));
+        await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
       }
     }
   } catch (err) {
     console.error("Error:", err);
-    alert("Error de conexión con el servidor");
+    await mostrarDialogo("Error de conexión con el servidor");
   }
 }
 
@@ -251,11 +251,11 @@ async function cargarOrdenes() {
       renderOrdenes(ordenes);
     } else {
       console.error("La respuesta no es un array:", ordenes);
-      alert("Error: El servidor no devolvió un array de órdenes");
+      await mostrarDialogo("Error: El servidor no devolvió un array de órdenes");
     }
   } catch (error) {
     console.error("Error al cargar órdenes:", error);
-    alert("Error al cargar órdenes. Verifica que el servidor esté funcionando.");
+    await mostrarDialogo("Error al cargar órdenes. Verifica que el servidor esté funcionando.");
   }
 }
 
@@ -283,7 +283,7 @@ async function cargarOrdenesPorEstado(estado) {
     }
   } catch (error) {
     console.error("Error al filtrar por estado:", error);
-    alert("Error al filtrar órdenes por estado");
+    await mostrarDialogo("Error al filtrar órdenes por estado");
   }
 }
 
@@ -309,11 +309,11 @@ async function cargarOrdenesPorMecanico(mecanicoId) {
       tbody.innerHTML = '<tr><td colspan="9" class="no-orders">No se encontraron órdenes para ese mecánico</td></tr>';
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (error) {
     console.error("Error al filtrar por mecánico:", error);
-    alert("Error al filtrar órdenes por mecánico");
+    await mostrarDialogo("Error al filtrar órdenes por mecánico");
   }
 }
 
@@ -338,11 +338,11 @@ async function cargarOrdenesPorCliente(clienteId) {
       tbody.innerHTML = '<tr><td colspan="9" class="no-orders">No se encontraron órdenes para ese cliente</td></tr>';
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (error) {
     console.error("Error al filtrar por cliente:", error);
-    alert("Error al filtrar órdenes por cliente");
+    await mostrarDialogo("Error al filtrar órdenes por cliente");
   }
 }
 
@@ -371,7 +371,7 @@ async function cargarOrdenesVencidas() {
     }
   } catch (error) {
     console.error("Error al cargar órdenes vencidas:", error);
-    alert("Error al cargar órdenes vencidas");
+    await mostrarDialogo("Error al cargar órdenes vencidas");
   }
 }
 
@@ -400,7 +400,7 @@ async function cargarOrdenesProximasAVencer(dias = 3) {
     }
   } catch (error) {
     console.error("Error al cargar órdenes próximas a vencer:", error);
-    alert("Error al cargar órdenes próximas a vencer");
+    await mostrarDialogo("Error al cargar órdenes próximas a vencer");
   }
 }
 
@@ -410,7 +410,7 @@ async function buscarOrdenPorId() {
   const id = inputBuscarOrden.value.trim();
 
   if (!id) {
-    alert("Ingrese un ID válido");
+    await mostrarDialogo("Ingrese un ID válido");
     return;
   }
 
@@ -434,17 +434,17 @@ async function buscarOrdenPorId() {
         inputBuscarOrden.value = '';
       } else {
         console.error("No se pudo extraer orden válida de:", respuesta);
-        alert("Orden no encontrada o datos incompletos");
+        await mostrarDialogo("Orden no encontrada o datos incompletos");
       }
     } else if (res.status === 404) {
-      alert("Orden no encontrada");
+      await mostrarDialogo("Orden no encontrada");
     } else {
       const error = await res.json();
-      alert("Error: " + (error.error || error.message || "Error desconocido"));
+      await mostrarDialogo("Error: " + (error.error || error.message || "Error desconocido"));
     }
   } catch (err) {
     console.error("Error al buscar orden:", err);
-    alert("Error al buscar orden. Verifica la conexión con el servidor.");
+    await mostrarDialogo("Error al buscar orden. Verifica la conexión con el servidor.");
   }
 }
 
@@ -505,7 +505,7 @@ async function editarOrden(id) {
     }
   } catch (err) {
     console.error("Error al cargar orden para editar:", err);
-    alert('Error al cargar orden para editar');
+    await mostrarDialogo('Error al cargar orden para editar');
   }
 }
 
@@ -540,26 +540,26 @@ async function eliminarOrden(id) {
   
   // Verificar que sea administrador
   if (rol !== 'administrador') {
-    alert("No tienes permisos para eliminar órdenes");
+    await mostrarDialogo("No tienes permisos para eliminar órdenes");
     return;
   }
   
-  if (!confirm("¿Seguro que quieres eliminar esta orden de trabajo?")) return;
+  if (!await mostrarDialogoConfirmacion("¿Seguro que quieres eliminar esta orden de trabajo?")) return;
 
   try {
 
     const res = await fetch(`${API_URL_ORDENES}/${id}`, { method: "DELETE"});
 
     if (res.ok) {
-      alert("Orden eliminada exitosamente");
+      await mostrarDialogo("Orden eliminada exitosamente");
       cargarOrdenes();
     } else {
       const error = await res.json();
-      alert("Error al eliminar orden: " + (error.error || error.message));
+      await mostrarDialogo("Error al eliminar orden: " + (error.error || error.message));
     }
   } catch (err) {
     console.error("Error al eliminar:", err);
-    alert("Error al eliminar orden");
+    await mostrarDialogo("Error al eliminar orden");
   }
 }
 
@@ -670,16 +670,16 @@ async function verReporteCompleto(id) {
     mostrarModalReporte(reporte);
   } catch (error) {
     console.error("Error al cargar reporte:", error);
-    alert('Error al cargar el reporte completo');
+    await mostrarDialogo('Error al cargar el reporte completo');
   }
 }
 
 // Mostrar modal con el reporte
-function mostrarModalReporte(reporte) {
+async function mostrarModalReporte(reporte) {
   const { orden, servicios, repuestos } = reporte;
   
   if (!orden) {
-    alert('No se encontró información de la orden');
+    await mostrarDialogo('No se encontró información de la orden');
     return;
   }
   

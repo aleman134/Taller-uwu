@@ -1,12 +1,6 @@
 // Variable global para almacenar el ID de la orden actual en el modal
 let ordenActualId = null;
-
-
-
-
-
-
-
+let ordenActualEstado = null;
 
 async function cargarCatalogoServicios() {
   try {
@@ -20,13 +14,9 @@ async function cargarCatalogoServicios() {
 }
 
 // Servicios realizados
-
 async function cargarServiciosRealizados(ordenId) {
   try {
     const res = await fetch(`${API_CONFIG.serviciosRealizados}/orden/${ordenId}`);
-
-
-
     if (!res.ok) throw new Error('Error al cargar servicios');
     return await res.json();
   } catch (error) {
@@ -37,26 +27,22 @@ async function cargarServiciosRealizados(ordenId) {
 
 async function agregarServicioRealizado(datos) {
   try {
-
-    
     const res = await fetch(API_CONFIG.serviciosRealizados, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(datos)
     });
     
-    
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({ error: 'Error desconocido' }));
-      console.error('Error del servidor:', errorData); // Debug
+      console.error('Error del servidor:', errorData);
       throw new Error(errorData.error || errorData.message || 'Error al agregar servicio');
     }
     
     const resultado = await res.json();
     return resultado;
   } catch (error) {
-    console.error('Error en agregarServicioRealizado:', error); // Debug
-
+    console.error('Error en agregarServicioRealizado:', error);
     throw error;
   }
 }
@@ -77,14 +63,9 @@ async function eliminarServicioRealizado(id) {
 }
 
 // Repuestos utilizados
-
 async function cargarRepuestosUtilizados(ordenId) {
   try {
     const res = await fetch(`${API_CONFIG.repuestosUtilizados}/orden/${ordenId}`);
-
-  
-
-
     if (!res.ok) throw new Error('Error al cargar repuestos');
     return await res.json();
   } catch (error) {
@@ -115,7 +96,6 @@ async function agregarRepuestoUtilizado(datos) {
   }
 }
 
-
 async function eliminarRepuestoUtilizado(id) {
   try {
     const res = await fetch(`${API_CONFIG.repuestosUtilizados}/${id}`, {
@@ -136,20 +116,26 @@ async function eliminarRepuestoUtilizado(id) {
 
 // Cambiar estado de la orden
 async function cambiarEstadoOrden() {
+  if (ordenActualEstado === 'entregada') {
+    await mostrarDialogo('No se puede cambiar el estado de una orden que ya fue entregada');
+    cerrarFormularioCambioEstado();
+    return;
+  }
+
   const nuevoEstado = document.getElementById('nuevoEstadoOrden').value;
   const observaciones = document.getElementById('observacionesCambioEstado').value.trim();
   
   if (!nuevoEstado) {
-    alert('Por favor seleccione un estado');
+    await mostrarDialogo('Por favor seleccione un estado');
     return;
   }
 
   if (!observaciones) {
-    alert('Por favor ingrese observaciones antes de cambiar el estado');
+    await mostrarDialogo('Por favor ingrese observaciones antes de cambiar el estado');
     return;
   }
   
-  if (!confirm(`¿Está seguro de cambiar el estado a "${formatearEstado(nuevoEstado)}"?`)) {
+  if (!await mostrarDialogoConfirmacion(`¿Está seguro de cambiar el estado a "${formatearEstado(nuevoEstado)}"?`)) {
     return;
   }
   
@@ -167,9 +153,11 @@ async function cambiarEstadoOrden() {
       const error = await res.json();
       throw new Error(error.error || 'Error al cambiar estado');
     }
+
+    ordenActualEstado = nuevoEstado;
     
     cerrarFormularioCambioEstado();
-    alert('Estado actualizado exitosamente');
+    await mostrarDialogo('Estado actualizado exitosamente');
     
     // Recargar la tabla de órdenes si existe
     if (typeof cargarOrdenes === 'function') {
@@ -179,7 +167,7 @@ async function cambiarEstadoOrden() {
     await recargarModal();
   } catch (error) {
     console.error('Error:', error);
-    alert('Error al cambiar estado: ' + error.message);
+    await mostrarDialogo('Error al cambiar estado: ' + error.message);
   }
 }
 
@@ -242,25 +230,23 @@ function cerrarFormularioCambioEstado() {
 
 
 // Modal de reporte completo con gestión
-
-
 async function verReporteCompletoGestion(id) {
   ordenActualId = id;
   
   try {
     // Cargar datos de la orden
-
     const resOrden = await fetch(`${API_CONFIG.ordenes}/reporte/${id}`);
-
     if (!resOrden.ok) throw new Error('Error al cargar el reporte');
     
     const reporte = await resOrden.json();
     const { orden } = reporte;
     
     if (!orden) {
-      alert('No se encontró información de la orden');
+      await mostrarDialogo('No se encontró información de la orden');
       return;
     }
+
+    ordenActualEstado = orden.estado;
     
     // Cargar servicios y repuestos
     const servicios = await cargarServiciosRealizados(id);
@@ -269,7 +255,7 @@ async function verReporteCompletoGestion(id) {
     mostrarModalGestion(orden, servicios, repuestos);
   } catch (error) {
     console.error("Error al cargar reporte:", error);
-    alert('Error al cargar el reporte completo');
+    await mostrarDialogo('Error al cargar el reporte completo');
   }
 }
 
@@ -282,6 +268,14 @@ function mostrarModalGestion(orden, servicios, repuestos) {
       })
     : 'N/A';
   
+  const esOrdenEntregada = orden.estado === 'entregada';
+  const esOrdenFinalizada = orden.estado === 'finalizada' || orden.estado === 'entregada';
+  const mensajeBloqueo = esOrdenEntregada
+    ? '<div style="background: #d1ecf1; border: 1px solid #17a2b8; color: #0c5460; padding: 12px; border-radius: 6px; margin-bottom: 15px; text-align: center; font-weight: 600;"><i class="fas fa-check-circle"></i> Esta orden ha sido entregada. No se pueden realizar más modificaciones.</div>'
+    : orden.estado === 'finalizada'
+    ? '<div style="background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 12px; border-radius: 6px; margin-bottom: 15px; text-align: center; font-weight: 600;"><i class="fas fa-info-circle"></i> Esta orden está finalizada. Solo puede cambiar el estado a "Entregada".</div>'
+    : '';
+
   const modalHTML = `
     <div id="modalReporteGestion" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px;" onclick="cerrarModalGestion(event)">
       <div style="background: white; padding: 30px; border-radius: 15px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
@@ -290,22 +284,27 @@ function mostrarModalGestion(orden, servicios, repuestos) {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 3px solid #e67e22; padding-bottom: 15px;">
           <h2 style="color: #34495e; margin: 0;">Orden de Trabajo #${orden.numero_orden || 'N/A'}</h2>
           <button onclick="cerrarModalGestion()" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-
             ✕
-
           </button>
         </div>
         
+        ${mensajeBloqueo}
+        
         <!-- Información General -->
         <div style="margin-bottom: 25px; background: #f8f9fa; padding: 20px; border-radius: 10px;">
-
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="color: #e67e22; margin: 0; font-size: 1.1rem;">Información General</h3>
-            <button onclick="mostrarFormularioCambioEstado('${orden.estado}')" style="background: #9b59b6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-              Cambiar Estado
-            </button>
+            ${!esOrdenEntregada ? `
+              <button onclick="mostrarFormularioCambioEstado('${orden.estado}')" style="background: #9b59b6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Cambiar Estado
+              </button>
+            ` : ''}
+           <!-- ${orden.estado === 'finalizada' || orden.estado === 'entregada' ? `-->
+              <!--<button onclick="mostrarFormularioHistorial(${orden.id})" style="background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 10px;">-->
+               <!-- Registrar Historial-->
+             <!-- </button>-->
+            <!--` : ''}-->
           </div>
-
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
             <div><strong>Estado:</strong> <span class="status ${orden.estado}">${formatearEstado(orden.estado)}</span></div>
             <div><strong>Cliente:</strong> ${orden.nombre_cliente || orden.cliente_id || 'N/A'}</div>
@@ -328,11 +327,11 @@ function mostrarModalGestion(orden, servicios, repuestos) {
             <h3 style="color: #3498db; margin: 0; font-size: 1.1rem;">
               <i class="fas fa-tools"></i> Servicios Realizados
             </h3>
-            <button onclick="mostrarFormularioServicio()" style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-
-              Agregar Servicio
-
-            </button>
+            ${!esOrdenFinalizada ? `
+              <button onclick="mostrarFormularioServicio()" style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Agregar Servicio
+              </button>
+            ` : ''}
           </div>
           <div id="listaServicios" style="background: #f8f9fa; padding: 15px; border-radius: 8px; min-height: 100px;">
             ${renderizarServicios(servicios)}
@@ -345,11 +344,11 @@ function mostrarModalGestion(orden, servicios, repuestos) {
             <h3 style="color: #e67e22; margin: 0; font-size: 1.1rem;">
               <i class="fas fa-cog"></i> Repuestos Utilizados
             </h3>
-            <button onclick="mostrarFormularioRepuesto()" style="background: #e67e22; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
-
-              Agregar Repuesto
-
-            </button>
+            ${!esOrdenFinalizada ? `
+              <button onclick="mostrarFormularioRepuesto()" style="background: #e67e22; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Agregar Repuesto
+              </button>
+            ` : ''}
           </div>
           <div id="listaRepuestos" style="background: #f8f9fa; padding: 15px; border-radius: 8px; min-height: 100px;">
             ${renderizarRepuestos(repuestos)}
@@ -368,13 +367,8 @@ function mostrarModalGestion(orden, servicios, repuestos) {
 }
 
 // Renderiza listas
-
-
-
-
-
-
 function renderizarServicios(servicios) {
+  const esOrdenFinalizada = ordenActualEstado === 'entregada' || ordenActualEstado === 'finalizada';
   if (!servicios || servicios.length === 0) {
     return '<p style="color: #95a5a6; font-style: italic; text-align: center; padding: 20px;">No hay servicios registrados</p>';
   }
@@ -389,16 +383,21 @@ function renderizarServicios(servicios) {
           <span><strong>Tiempo:</strong> ${s.tiempo_empleado || 0} min</span>
         </div>
       </div>
-      <button onclick="eliminarServicioOrden(${s.id})" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
-
-        Eliminar
-
-      </button>
+      ${!esOrdenFinalizada ? `
+        <button onclick="eliminarServicioOrden(${s.id})" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
+          Eliminar
+        </button>
+      ` : `
+        <div style="background: #ecf0f1; color: #95a5a6; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 600;">
+          <i class="fas fa-lock"></i>
+        </div>
+      `}
     </div>
   `).join('');
 }
 
 function renderizarRepuestos(repuestos) {
+  const esOrdenFinalizada = ordenActualEstado === 'entregada' || ordenActualEstado === 'finalizada';
   if (!repuestos || repuestos.length === 0) {
     return '<p style="color: #95a5a6; font-style: italic; text-align: center; padding: 20px;">No hay repuestos registrados</p>';
   }
@@ -410,16 +409,20 @@ function renderizarRepuestos(repuestos) {
         <p style="margin: 5px 0; color: #7f8c8d; font-size: 0.9em;">${r.descripcion || 'Sin descripción'}</p>
         <div style="display: flex; gap: 20px; font-size: 0.85em; color: #95a5a6;">
           <span><strong>Cantidad:</strong> ${r.cantidad || 0}</span>
-
           <span><strong>Costo Unit.:</strong> Q${parseFloat(r.costo_cliente || 0).toFixed(2)}</span>
           <span><strong>Total:</strong> Q${(parseFloat(r.cantidad || 0) * parseFloat(r.costo_cliente || 0)).toFixed(2)}</span>
           ${r.proveedor ? `<span><strong>Proveedor:</strong> ${r.proveedor}</span>` : ''}
         </div>
       </div>
-      <button onclick="eliminarRepuestoOrden(${r.id})" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
-        Eliminar
-
-      </button>
+      ${!esOrdenFinalizada ? `
+        <button onclick="eliminarRepuestoOrden(${r.id})" style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
+          Eliminar
+        </button>
+      ` : `
+        <div style="background: #ecf0f1; color: #95a5a6; padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: 600;">
+          <i class="fas fa-lock"></i>
+        </div>
+      `}
     </div>
   `).join('');
 }
@@ -452,19 +455,13 @@ function calcularResumenCostos(orden, servicios, repuestos) {
 }
 
 // Formularios
-
 async function mostrarFormularioServicio() {
   const catalogoServicios = await cargarCatalogoServicios();
   
   if (!catalogoServicios || catalogoServicios.length === 0) {
-    alert('No hay servicios disponibles en el catálogo');
+    await mostrarDialogo('No hay servicios disponibles en el catálogo');
     return;
   }
-
-  
-
-
-
 
   const formHTML = `
     <div id="formServicio" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 10000; max-width: 500px; width: 90%;">
@@ -543,7 +540,6 @@ function cargarDatosServicio() {
 }
 
 async function guardarServicio() {
-
   const servicioId = document.getElementById('servicio_id').value;
   const costo = document.getElementById('costo').value;
   const descripcionTrabajo = document.getElementById('descripcion_trabajo').value;
@@ -551,12 +547,12 @@ async function guardarServicio() {
   
   // Validación
   if (!servicioId || servicioId === "") {
-    alert('Por favor seleccione un servicio');
+    await mostrarDialogo('Por favor seleccione un servicio');
     return;
   }
   
   if (!costo || parseFloat(costo) <= 0) {
-    alert('Por favor ingrese un costo válido');
+    await mostrarDialogo('Por favor ingrese un costo válido');
     return;
   }
   
@@ -572,11 +568,11 @@ async function guardarServicio() {
     agregarServicioRealizado(datos);
     
     cerrarFormularioServicio();
-    alert('Servicio agregado exitosamente');
+    await mostrarDialogo('Servicio agregado exitosamente');
     await recargarModal();
   } catch (error) {
     console.error('Error completo:', error); // Debug
-    alert('Error al agregar servicio: ' + error.message);
+    await mostrarDialogo('Error al agregar servicio: ' + error.message);
 
   }
 }
@@ -661,7 +657,7 @@ async function guardarRepuesto() {
   };
   
   if (!datos.nombre_repuesto || !datos.cantidad || !datos.costo_cliente) {
-    alert('Por favor complete los campos obligatorios (*)');
+    await mostrarDialogo('Por favor complete los campos obligatorios (*)');
     return;
   }
   
@@ -669,11 +665,11 @@ async function guardarRepuesto() {
     await agregarRepuestoUtilizado(datos);
     cerrarFormularioRepuesto();
 
-    alert('Repuesto agregado exitosamente');
+    await mostrarDialogo('Repuesto agregado exitosamente');
     await recargarModal();
   } catch (error) {
     console.error('Error al agregar repuesto:', error);
-    alert('Error al agregar repuesto: ' + error.message);
+    await mostrarDialogo('Error al agregar repuesto: ' + error.message);
 
   }
 }
@@ -695,45 +691,36 @@ function cerrarFormularioRepuesto() {
 }
 
 // Eliminar servicio
-
-
-
-
-
-
-
-
 async function eliminarServicioOrden(id) {
-  if (!confirm('¿Está seguro de eliminar este servicio?')) return;
+  if (!await mostrarDialogoConfirmacion('¿Está seguro de eliminar este servicio?')) return;
   
   try {
     await eliminarServicioRealizado(id);
 
-    alert('Servicio eliminado exitosamente');
+    await mostrarDialogo('Servicio eliminado exitosamente');
     await recargarModal();
   } catch (error) {
     console.error('Error al eliminar servicio:', error);
-    alert('Error al eliminar servicio: ' + error.message);
+    await mostrarDialogo('Error al eliminar servicio: ' + error.message);
   }
 }
 
 // Eliminar repuesto
 async function eliminarRepuestoOrden(id) {
-  if (!confirm('¿Está seguro de eliminar este repuesto?')) return;
+  if (!await mostrarDialogoConfirmacion('¿Está seguro de eliminar este repuesto?')) return;
   
   try {
     await eliminarRepuestoUtilizado(id);
-    alert('Repuesto eliminado exitosamente');
+    await mostrarDialogo('Repuesto eliminado exitosamente');
     await recargarModal();
   } catch (error) {
     console.error('Error al eliminar repuesto:', error);
-    alert('Error al eliminar repuesto: ' + error.message);
+    await mostrarDialogo('Error al eliminar repuesto: ' + error.message);
 
   }
 }
 
 // Utilidades
-
 async function recargarModal() {
   if (!ordenActualId) {
     console.error('No hay orden actual para recargar');
@@ -758,11 +745,8 @@ async function recargarModal() {
     await verReporteCompletoGestion(idOrden);
   } catch (error) {
     console.error('Error al recargar modal:', error);
-    alert('Error al recargar el reporte. Por favor, cierre y vuelva a abrir.');
+    await mostrarDialogo('Error al recargar el reporte. Por favor, cierre y vuelva a abrir.');
   }
-
-
-
 }
 
 function cerrarModalGestion(event) {
@@ -778,6 +762,7 @@ function cerrarModalGestion(event) {
   
 
   ordenActualId = null;
+  ordenActualEstado = null;
 }
 
 // Exportar funciones globales

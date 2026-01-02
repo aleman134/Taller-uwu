@@ -89,16 +89,22 @@ function showSection(sectionId) {
 }
 
 // datos usuarios
-document.addEventListener("DOMContentLoaded", () => {
-  const user = verificarAutenticacion('administrador');
+document.addEventListener("DOMContentLoaded", async () => {
+  const user = await verificarAutenticacion('administrador'); // ← Agregar await
   
   if (user) {
     iniciarVerificacionSesion();
     
-    document.getElementById("userName").textContent = user.correo;
-    document.getElementById("userRole").textContent = user.rol;
-    document.querySelector(".user-avatar").textContent =
-      user.correo.charAt(0).toUpperCase();
+    // Verificar que user.correo existe antes de usarlo
+    if (user.correo) {
+      document.getElementById("userName").textContent = user.correo;
+      document.querySelector(".user-avatar").textContent =
+        user.correo.charAt(0).toUpperCase();
+    }
+    
+    if (user.rol) {
+      document.getElementById("userRole").textContent = user.rol;
+    }
     
     showSection("dashboard");
   }

@@ -55,8 +55,8 @@ function inicializarVistaCitas() {
   setTimeout(() => {
     configurarInterfazCitasPorRol();
     
-    if (typeof inicializarEventosCitas === 'function') {
-      inicializarEventosCitas();
+    if (typeof inicializarVistaCitas === 'function') {
+      inicializarVistaCitas();
     }
     
     if (typeof cargarCitasCita === 'function') {

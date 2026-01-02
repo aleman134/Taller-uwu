@@ -1,100 +1,221 @@
 .alertas {
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25), 
+                0 0 0 1px rgba(52, 73, 94, 0.1);
+    max-width: 480px;
     width: 90%;
-    animation: aparecerAlerta 0.3s ease;
+    animation: aparecerAlerta 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: white;
+    overflow: hidden;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
 }
 
 .alertas::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
+    background: rgba(44, 62, 80, 0.75);
+    backdrop-filter: blur(5px);
+    animation: aparecerBackdrop 0.3s ease;
+}
+
+@keyframes aparecerBackdrop {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Encabezado decorativo */
+.contenido-alerta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e67e22;
+    border-radius: 16px 16px 0 0;
 }
 
 .contenido-alerta {
-    padding: 30px;
+    padding: 35px 30px 25px;
     position: relative;
+    background: white;
 }
 
+/* Botón cerrar mejorado */
 .cerrar-alerta {
     position: absolute;
-    top: 10px;
+    top: 15px;
     right: 15px;
-    font-size: 28px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
     cursor: pointer;
-    color: #999;
-    transition: color 0.2s;
+    color: #95a5a6;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    background: transparent;
+    line-height: 1;
 }
 
 .cerrar-alerta:hover {
-    color: #333;
+    color: #34495e;
+    background: #ecf0f1;
+    transform: rotate(90deg);
 }
 
+/* Mensaje principal */
 #mensaje-alerta {
-    margin: 20px 0;
+    margin: 15px 0 25px;
     font-size: 16px;
-    line-height: 1.5;
-    color: #333;
+    line-height: 1.6;
+    color: #2c3e50;
+    font-weight: 400;
+    white-space: pre-line;
+    text-align: left;
+    padding-left: 5px;
 }
 
+/* Contenedor de acciones */
 .acciones-alerta {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: flex-end;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #ecf0f1;
 }
 
+/* Botones de acción */
 .btnAceptar, .btnCancelar {
-    padding: 10px 20px;
+    padding: 12px 28px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 100px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btnAceptar {
-    background: #4CAF50;
+    background: #e67e22;
     color: white;
 }
 
 .btnAceptar:hover {
-    background: #45a049;
+    background: #d35400;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
+}
+
+.btnAceptar:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(230, 126, 34, 0.3);
 }
 
 .btnCancelar {
-    background: #f44336;
+    background: #95a5a6;
     color: white;
 }
 
 .btnCancelar:hover {
-    background: #da190b;
+    background: #7f8c8d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
 }
 
-/* Animaciones */
+.btnCancelar:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(149, 165, 166, 0.3);
+}
+
+/* Animaciones de entrada - SIN transform para no afectar el centrado */
 @keyframes aparecerAlerta {
-    from {
+    0% {
         opacity: 0;
-        transform: scale(0.8);
     }
-    to {
+    100% {
         opacity: 1;
-        transform: scale(1);
     }
 }
 
+/* Animación de salida */
 .alertas.cerrando {
-    animation: desaparecerAlerta 0.3s ease;
+    animation: desaparecerAlerta 0.3s ease forwards;
 }
 
 @keyframes desaparecerAlerta {
-    from {
+    0% {
         opacity: 1;
-        transform: scale(1);
     }
-    to {
+    100% {
         opacity: 0;
-        transform: scale(0.8);
     }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .alertas {
+        max-width: 95%;
+        width: 95%;
+    }
+    
+    .contenido-alerta {
+        padding: 30px 20px 20px;
+    }
+    
+    #mensaje-alerta {
+        font-size: 15px;
+        margin: 10px 0 20px;
+    }
+    
+    .acciones-alerta {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+    
+    .btnAceptar, .btnCancelar {
+        width: 100%;
+        padding: 14px 20px;
+        min-width: auto;
+    }
+    
+    .cerrar-alerta {
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+        top: 12px;
+        right: 12px;
+    }
+}
+
+/* Variantes de alerta por tipo (opcional) */
+.alertas.alerta-exito .contenido-alerta::before {
+    background: #27ae60;
+}
+
+.alertas.alerta-error .contenido-alerta::before {
+    background: #e74c3c;
+}
+
+.alertas.alerta-advertencia .contenido-alerta::before {
+    background: #f39c12;
+}
+
+.alertas.alerta-info .contenido-alerta::before {
+    background: #3498db;
 }

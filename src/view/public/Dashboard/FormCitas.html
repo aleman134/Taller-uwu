@@ -149,15 +149,15 @@
     </div>
   </div>
 
-    <dialog class="alertas" id="dialogo-alerta">
-            <div class="contenido-alerta">
-                <span class="cerrar-alerta">&times;</span>
-                <p id="mensaje-alerta"></p>
-                <div class="acciones-alerta">
-                    <button id="btnCancelarDialogo" class="btnCancelar">Cancelar</button>
-                    <button id="btnAceptarDialogo" class="btnAceptar">Aceptar</button>
-                </div>
+<dialog class="alertas" id="dialogo-alerta">
+        <div class="contenido-alerta">
+            <span class="cerrar-alerta">&times;</span>
+            <p id="mensaje-alerta"></p>
+            <div class="acciones-alerta">
+                <button id="btnCancelarDialogo" class="btnCancelar">Cancelar</button>
+                <button id="btnAceptarDialogo" class="btnAceptar">Aceptar</button>
             </div>
+        </div>
 </dialog>
 
   <!-- Scripts -->
@@ -165,29 +165,6 @@
   <script src="../js/alertas.js"></script>
   <script src="../js/citas.js"></script>
   
-  <!-- Inicialización para página standalone -->
-  <script>
-    // Ejecutar cuando el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('Página de citas cargada, inicializando...');
-      
-      // Verificar que las funciones existen
-      if (typeof inicializarEventosCitas === 'function') {
-        inicializarEventosCitas();
-        console.log('Eventos de citas inicializados');
-      } else {
-        console.error('inicializarEventosCitas no está definida');
-      }
-      
-      // Cargar citas iniciales
-      if (typeof cargarCitasCita === 'function') {
-        cargarCitasCita();
-        console.log('Cargando citas iniciales...');
-      } else {
-        console.error('cargarCitasCita no está definida');
-      }
-    });
-  </script>
 
 
 </body>

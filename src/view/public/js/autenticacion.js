@@ -1,5 +1,5 @@
 // autenticacion
-function verificarAutenticacion(rolPermitido = null) {
+async function verificarAutenticacion(rolPermitido = null) {
   const user = JSON.parse(localStorage.getItem("usuario"));
 
   if (!user) {
@@ -10,7 +10,7 @@ function verificarAutenticacion(rolPermitido = null) {
   }
 
   if (rolPermitido && user.rol !== rolPermitido) {
-    alert("No tienes permisos para acceder a esta sección");
+    await mostrarDialogo("No tienes permisos para acceder a esta sección");
 
     window.location.replace("/index.html");
 

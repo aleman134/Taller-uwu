@@ -72,7 +72,7 @@ function configurarActualizacionMecanicos() {
   inputDuracion.addEventListener('change', actualizarMecanicosDisponibles);
 }
 
-// valida fehca y horario
+// valida fecha y horario
 function validarFechaHorario(fechaInput) {
   if (!fechaInput) {
     return { valida: false, mensaje: "Debe seleccionar una fecha y hora" };
@@ -152,71 +152,108 @@ async function mostrarAlertaDisponibilidad(data) {
   const horarios = data.horarios_alternativos || [];
   
   if (horarios.length > 0) {
-    const horariosHTML = horarios.map(h => 
-      `• ${h.fecha_formateada}`
+    const horariosTexto = horarios.map((h, index) => 
+      `${index + 1}. ${h.fecha_formateada}`
     ).join('\n');
     
     const respuesta = await mostrarDialogoConfirmacion(
-      `${mensaje}\n\nHorarios alternativos disponibles:\n${horariosHTML}\n\n¿Desea seleccionar uno de estos horarios?`
+      `${mensaje}\n\nHorarios alternativos disponibles:\n\n${horariosTexto}\n\n¿Desea seleccionar uno de estos horarios?`
     );
     
     if (respuesta) {
-      mostrarModalHorariosAlternativos(horarios);
+      await seleccionarHorarioAlternativo(horarios);
     }
   } else {
     await mostrarDialogo(mensaje);
   }
 }
 
+async function seleccionarHorarioAlternativo(horarios) {
+  // Crear un select temporal en el DOM
+  const selectId = 'temp-select-horarios';
+  let selectElement = document.getElementById(selectId);
+  
+  if (!selectElement) {
+    selectElement = document.createElement('select');
+    selectElement.id = selectId;
+    selectElement.style.display = 'none';
+    document.body.appendChild(selectElement);
+  }
+  
+  // Poblar el select
+  selectElement.innerHTML = horarios.map((h, index) => 
+    `<option value="${index}">${h.fecha_formateada}</option>`
+  ).join('');
+  
+  // Crear mensaje con opciones numeradas
+  const opcionesTexto = horarios.map((h, index) => 
+    `${index + 1}. ${h.fecha_formateada}`
+  ).join('\n');
+  
+  // Mostrar diálogo personalizado con el mensaje del select
+  const dialogoHTML = crearDialogoSeleccionHorario(opcionesTexto, horarios);
+  document.body.insertAdjacentHTML('beforeend', dialogoHTML);
+  
+  const dialogo = document.getElementById('dialogo-seleccion-horario');
+  dialogo.showModal();
+  
+  // Configurar eventos
+  return new Promise((resolve) => {
+    const selectHorario = document.getElementById('select-horario-temp');
+    const btnConfirmar = document.getElementById('btn-confirmar-horario');
+    const btnCancelarHorario = document.getElementById('btn-cancelar-horario');
+    const btnCerrarHorario = dialogo.querySelector('.cerrar-alerta');
+    
+    const confirmar = async () => {
+      const index = parseInt(selectHorario.value);
+      
+      if (isNaN(index) || index < 0 || index >= horarios.length) {
+        await mostrarDialogo('Por favor seleccione un horario válido');
+        return;
+      }
+      
+      document.getElementById("fechaCita").value = horarios[index].fecha_hora.slice(0, 16);
+      await actualizarMecanicosDisponibles();
+      await cerrarDialogoAnimado(dialogo);
+      dialogo.remove();
+      resolve(true);
+    };
+    
+    const cancelar = async () => {
+      await cerrarDialogoAnimado(dialogo);
+      dialogo.remove();
+      resolve(false);
+    };
+    
+    btnConfirmar.addEventListener('click', confirmar, { once: true });
+    btnCancelarHorario.addEventListener('click', cancelar, { once: true });
+    btnCerrarHorario.addEventListener('click', cancelar, { once: true });
+  });
+}
 
-function mostrarModalHorariosAlternativos(horarios) {
-  const modalHTML = `
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                background: rgba(0,0,0,0.7); z-index: 10000; display: flex; 
-                align-items: center; justify-content: center;" id="modalHorarios">
-      <div style="background: white; padding: 30px; border-radius: 12px; 
-                  max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-        <h3 style="margin-bottom: 20px; color: #333;">Seleccione un Horario Alternativo</h3>
-        <select id="selectHorario" style="width: 100%; padding: 10px; margin-bottom: 20px; 
-                                          border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+function crearDialogoSeleccionHorario(opcionesTexto, horarios) {
+  const options = horarios.map((h, index) => 
+    `<option value="${index}">${h.fecha_formateada}</option>`
+  ).join('');
+  
+  return `
+    <dialog class="alertas" id="dialogo-seleccion-horario">
+      <div class="contenido-alerta">
+        <span class="cerrar-alerta">&times;</span>
+        <h3 style="margin: 0 0 20px 0; color: #333;">Seleccione un Horario</h3>
+        <select id="select-horario-temp" 
+                style="width: 100%; padding: 10px; margin-bottom: 20px; 
+                       border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
           <option value="">-- Seleccione un horario --</option>
-          ${horarios.map((h, index) => 
-            `<option value="${index}">${h.fecha_formateada}</option>`
-          ).join('')}
+          ${options}
         </select>
-        <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button onclick="document.getElementById('modalHorarios').remove()" 
-                  class="btnCancelar"
-                  style="padding: 10px 20px; background: #f44336; color: white; 
-                         border: none; border-radius: 6px; cursor: pointer;">
-            Cancelar
-          </button>
-          <button onclick="seleccionarHorarioAlternativo()" 
-                  class="btnAceptar"
-                  style="padding: 10px 20px; background: #4CAF50; color: white; 
-                         border: none; border-radius: 6px; cursor: pointer;">
-            Aceptar
-          </button>
+        <div class="acciones-alerta">
+          <button id="btn-cancelar-horario" class="btnCancelar">Cancelar</button>
+          <button id="btn-confirmar-horario" class="btnAceptar">Aceptar</button>
         </div>
       </div>
-    </div>
+    </dialog>
   `;
-  
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
-  
-  window.seleccionarHorarioAlternativo = async function() {
-    const select = document.getElementById('selectHorario');
-    const index = parseInt(select.value);
-    
-    if (isNaN(index) || index < 0 || index >= horarios.length) {
-      await mostrarDialogo('Por favor seleccione un horario válido');
-      return;
-    }
-    
-    document.getElementById("fechaCita").value = horarios[index].fecha_hora.slice(0, 16);
-    actualizarMecanicosDisponibles();
-    document.getElementById('modalHorarios').remove();
-  };
 }
 
 // actualiza mecanicos disponibles
@@ -232,6 +269,11 @@ async function actualizarMecanicosDisponibles() {
       fecha_cita: fechaCita,
       duracion_minutos: duracionMinutos || 60
     });
+    
+    // NUEVO: Excluir cita actual si estamos editando
+    if (window.citaEnEdicion) {
+      params.append('excluir_cita_id', window.citaEnEdicion);
+    }
     
     const res = await fetch(`${API_URL_CITAS}/mecanicos/disponibles?${params}`);
     const mecanicos = await res.json();
@@ -681,8 +723,13 @@ async function editarCita(id) {
       // Formatear fecha para input datetime-local
       if (cita.fecha_cita) {
         const fecha = new Date(cita.fecha_cita);
-        const fechaFormateada = fecha.toISOString().slice(0, 16);
+  
+        const offset = fecha.getTimezoneOffset();
+        const fechaLocal = new Date(fecha.getTime() - (offset * 60 * 1000));
+        const fechaFormateada = fechaLocal.toISOString().slice(0, 16);
         document.getElementById("fechaCita").value = fechaFormateada;
+
+        await actualizarMecanicosDisponibles();
       }
       
       document.getElementById("duracionMinutosCita").value = cita.duracion_minutos || '';
@@ -865,9 +912,22 @@ function renderCitas(citas) {
         <td data-label="Acciones">
           <button class="btn-edit" onclick="editarCita(${citaId})">Editar</button>
           <button class="btn-delete" onclick="eliminarCita(${citaId})">Eliminar</button>
-          ${cita.estado === 'programada' ? `<button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'confirmada')">Confirmar</button>` : ''}
-          ${cita.estado === 'confirmada' || cita.estado === 'programada' ? `<button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'en_proceso')">Iniciar</button>` : ''}
-          ${cita.estado === 'en_proceso' ? `<button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'completada')">Completar</button>` : ''}
+  
+          ${cita.estado === 'programada' ? `
+            <button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'confirmada')">Confirmar</button>
+          ` : ''}
+  
+          ${cita.estado === 'confirmada' || cita.estado === 'programada' ? `
+            <button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'en_proceso')">Iniciar</button>
+          ` : ''}
+  
+          ${cita.estado === 'en_proceso' ? `
+            <button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'completada')">Completar</button>
+          ` : ''}
+  
+          ${cita.estado !== 'cancelada' && cita.estado !== 'completada' ? `
+            <button class="btn-status" onclick="cambiarEstadoCita(${citaId}, 'cancelada')">Cancelar</button>
+          ` : ''}
         </td>
       </tr>
     `;

@@ -73,3 +73,6 @@ function mostrarDialogoConfirmacion(mensaje) {
         btnCerrar.addEventListener('click', cancelar, { once: true });
     });
 }
+window.cerrarDialogoAnimado = cerrarDialogoAnimado;
+window.mostrarDialogo = mostrarDialogo;
+window.mostrarDialogoConfirmacion = mostrarDialogoConfirmacion;

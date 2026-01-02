@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login uwu</title>
   <link rel="stylesheet" href="./src/view/public/css/styles.css">
+  <link rel="stylesheet" href="./src/view/public/css/alertas.css">
 </head>
 <body class="login-page">
   <div class="login-container">
@@ -16,7 +17,19 @@
     </form>
   </div>
 
+  <dialog class="alertas" id="dialogo-alerta">
+            <div class="contenido-alerta">
+                <span class="cerrar-alerta">&times;</span>
+                <p id="mensaje-alerta"></p>
+                <div class="acciones-alerta">
+                    <button id="btnCancelarDialogo" class="btnCancelar">Cancelar</button>
+                    <button id="btnAceptarDialogo" class="btnAceptar">Aceptar</button>
+                </div>
+            </div>
+  </dialog>
+
   <script src="./src/view/public/js/config.js"></script>
+  <script src="../js/alertas.js"></script>
   <script src="./src/view/public/js/login.js"></script>
 </body>
 </html>
